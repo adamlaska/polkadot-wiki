@@ -2507,10 +2507,10 @@ commander@^5.0.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-5.1.0.tgz#46abbd1652f8e059bddaef99bbdcb2ad9cf179ae"
   integrity sha512-P0CysNDQ7rtVw4QIQtm+MRxV66vKFSvlsQvGYXZWR3qFU0jlMKHZZZgw8e+8DSah4UDKMqnknRDQz+xuQXQ/Zg==
 
-commander@^6.0.0:
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-6.2.1.tgz#0792eb682dfbc325999bb2b84fddddba110ac73c"
-  integrity sha512-U7VdrJFnJgo4xjrHpTzu0yrHPGImdsmD95ZlgYSEajAn2JKzDhDTPG9kBTefmObL2w/ngeZnilk+OV9CG3d7UA==
+commander@^8.0.0:
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-8.3.0.tgz#4837ea1b2da67b9c616a67afbb0fafee567bca66"
+  integrity sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==
 
 commondir@^1.0.1:
   version "1.0.1"
@@ -5451,12 +5451,12 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-katex@^0.13.9:
-  version "0.13.9"
-  resolved "https://registry.yarnpkg.com/katex/-/katex-0.13.9.tgz#2b40665b1d287b62df08b195689d15df7689390f"
-  integrity sha512-2rz+tCHtVvQOFfq3iv2/xFOqfQmz6MWTwZ5B34kp9CX99iOT2z6YdjyiTDFm0isXR2ePRi0gF8ERwS+IpNfgNA==
+katex@^0.15.1:
+  version "0.15.1"
+  resolved "https://registry.yarnpkg.com/katex/-/katex-0.15.1.tgz#cf4ce2fa1257c3279cc7a7fe0c8d1fab40800893"
+  integrity sha512-KIk+gizli0gl1XaJlCYS8/donGMbzXYTka6BbH3AgvDJTOwyDY4hJ+YmzJ1F0y/3XzX5B9ED8AqB2Hmn2AZ0uA==
   dependencies:
-    commander "^6.0.0"
+    commander "^8.0.0"
 
 keypair@^1.0.1:
   version "1.0.3"
