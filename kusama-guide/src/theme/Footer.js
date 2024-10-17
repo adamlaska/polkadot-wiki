@@ -73,7 +73,7 @@ export default function Footer() {
             Kusama Watercooler
           </a>
           <a
-            href="https://github.com/w3f/General-Grants-Program"
+            href="https://web3.foundation/grants/"
             target="_blank"
             rel="noreferrer noopener"
             className="homepage-font"
@@ -90,7 +90,7 @@ export default function Footer() {
               The Kappa Sigma Mu fraternity asks you to get a Kusama tattoo to
               join.
             </p>
-            <a href={docUrl("maintain-guides-society-kusama")}>
+            <a href="https://wiki.polkadot.network/docs/maintain-guides-society-kusama">
               <button className="kusama-mainpage-build-footer">
                 See Kappa Sigma Mu
               </button>
@@ -103,7 +103,19 @@ export default function Footer() {
         <div className="copyright homepage-font">
           {siteConfig.themeConfig.footer.copyright}
         </div>
+        ·
         <a
+          target="_blank"
+          rel="noreferrer noopener"
+          className="item homepage-font"
+          href="https://polkadot.network/legal-disclosures/"
+        >
+           Legal Disclosures 
+        </a>
+        ·
+        <a
+          target="_blank"
+          rel="noreferrer noopener"
           className="item homepage-font"
           href="https://polkadot.network/privacy/"
         >

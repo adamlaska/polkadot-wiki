@@ -9,10 +9,11 @@ slug: ../maintain-guides-validator-community
 
 ## Building a Community and Attracting Nominations
 
-After [setting up a validator][], nominations will only come in with extra work. The community of
-nominators will need to know about the validator to trust staking with them, and thus the validator
-must distinguish themselves to attract nominations. The following gives some general guidance on
-different approaches to building a community and attracting nominations.
+After [setting up a validator](maintain-guides-how-to-validate-Polkadot), nominations will only come
+in with extra work. The community of nominators will need to know about the validator to trust
+staking with them, and thus the validator must distinguish themselves to attract nominations. The
+following gives some general guidance on different approaches to building a community and attracting
+nominations.
 
 Being a high-quality validator entails effectively running nodes and building a brand, reputation,
 and community around validation services. The responsibilities of a quality validator additionally
@@ -21,11 +22,12 @@ throughout the ecosystem is a great way to attract nominations and solidify long
 sustainability as a validator.
 
 One thing to remember is that there is a risk involved in staking for both validators and
-nominators, as both can lose up to 100% of their funds if a validator gets slashed. This means it is
-paramount for nominators only to nominate validators that they trust, as well as for validators to
-do their best to instill confidence in their ability to provide validation services. Validators
-should do their best to build a reputation through many different means, as this is one of the most
-important factors in how nominators should pick whom they stake with.
+nominators, as both can lose up to 100% of their funds if a validator gets
+[slashed](../learn/learn-offenses.md). This means it is paramount for nominators only to nominate
+validators that they trust, as well as for validators to do their best to instill confidence in
+their ability to provide validation services. Validators should do their best to build a reputation
+through many different means, as this is one of the most important factors in how nominators should
+pick whom they stake with.
 
 ## Gaining Visibility
 
@@ -38,11 +40,12 @@ channels.
 
 ### Setting Identity
 
-All validators should set an on-chain [identity][] and get a judgement on the identity so that
-nominators can find nodes when browsing through various dashboards and UIs. When someone interacts
-with the chain, it ensures that an address they may come across belongs to the validator, and
-actions of that identity throughout various parts of the ecosystem (staking, governance, block
-explorers, etc.) form a cohesive representation of their participation.
+All validators should set an on-chain [identity](../learn/learn-identity.md#setting-an-identity) and
+get a judgement on the identity so that nominators can find nodes when browsing through various
+dashboards and UIs. When someone interacts with the chain, it ensures that an address they may come
+across belongs to the validator, and actions of that identity throughout various parts of the
+ecosystem (staking, governance, block explorers, etc.) form a cohesive representation of their
+participation.
 
 :::note When running multiple validator nodes, the best way to scale an identity is to use multiple
 sub-identities from a single verified identity
@@ -54,12 +57,7 @@ means of reaching out. Nominators may wish to know more about the Validator, the
 future staking plans, tooling used, or several additional topics. Having a dedicated website
 additionally to provide this sort of information is ideal.
 
-:::note Ledger app doesn't support the extrinsic for setting identity yet
-
-As a workaround, create a primary identity with an on-chain account and then use that primary
-identity, assign a [sub-identity](../learn/learn-identity.md#sub-accounts) to the Ledger stash.
-
-:::
+:::note Ledger app on **Nano S** doesn't support the extrinsic for setting identity yet
 
 ### Website
 
@@ -77,11 +75,11 @@ most essential factors in running quality validator services.
 ### Self Stake
 
 Validators should have skin in the game in their operations in the form of a stake that is
-self-bonded to their validator stash. Slashing applies to the total stake of a Validator, therefore
-having a high self-stake shows confidence in the operations. This helps show commitment from the
-Validator as they have skin in the game and can be penalized for negative actions or poor
-maintenance. mess up. Having very little self-stake can signal to nominators that they have nothing
-to lose in the case of failures.
+self-bonded to their validator stash. [Slashing](../learn/learn-offenses.md) applies to the total
+stake of a Validator, therefore having a high self-stake shows confidence in the operations. This
+helps show commitment from the Validator as they have skin in the game and can be penalized for
+negative actions or poor maintenance. mess up. Having very little self-stake can signal to
+nominators that they have nothing to lose in the case of failures.
 
 Additionally, it can help nominators to get a sense of how validators manage their stakes. Defining
 a self-allocation strategy is also helpful in seeing how efficiently a validator's stake can be
@@ -134,9 +132,9 @@ Some factors of architecture to highlight might include:
 Outlining how a validator runs its servers helps nominators understand how diversified a validator
 is. Does the Validator run in the cloud, on dedicated machines, in a co-located datacenter, or in a
 home residential setup? Do they run multiple nodes on the same machine? If every validator is hosted
-in AWS, there is a risk of potential outages that cause large amounts of nodes to go offline,
-causing slashing for unresponsiveness. Nominators may want to choose validators that have thoroughly
-diversified the providers they use or the facilities they operate in.
+in AWS, there is a risk of potential outages that cause large amounts of nodes to go offline.
+Nominators may want to choose validators that have thoroughly diversified the providers they use or
+the facilities they operate in.
 
 Additionally, how does a Validator contribute to decentralization? It can be helpful to outline
 these efforts so that the values of a Nominator and Validator are aligned.
@@ -147,8 +145,7 @@ distro-packaged libraries? Any server hardening practices, etc.
 
 #### Specs
 
-Are you running the recommended Standard Hardware for
-{{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }}? Can you ensure that machines have
+Are you running the recommended Standard Hardware for Polkadot? Can you ensure that machines have
 enough processing power, memory, file storage, and network connectivity? It's helpful for nominators
 to know the specs of the machines a validator uses to assess how they may perform in the network. If
 a validator is running underpowered machines, they may not want to nominate them, as these can
@@ -173,10 +170,10 @@ the usage of firewalls, VPNs, network segmentation, proxies, or other layers sep
 #### Upgrading
 
 Both Polkadot and Kusama releases are published.
-[here](https://github.com/paritytech/polkadot/releases). Validators are expected to upgrade their
-nodes as soon as a new release comes. Although not every release is mandatory to upgrade, each new
-release usually has bug fixes, optimizations, new features, or other beneficial changes. It's in the
-best interest of the entire network that validators update their nodes in a timely fashion. This
+[here](https://github.com/paritytech/polkadot-sdk/releases). Validators are expected to upgrade
+their nodes as soon as a new release comes. Although not every release is mandatory to upgrade, each
+new release usually has bug fixes, optimizations, new features, or other beneficial changes. It's in
+the best interest of the entire network that validators update their nodes in a timely fashion. This
 signals to nominators that a validator is timely care about their operations and is quick to adapt
 to necessary circumstances.
 
@@ -221,8 +218,8 @@ do not run nodes.
 
 ##### Security / Key handling policies
 
-It is paramount that session keys and stash/controller keys are stored and handled with the utmost
-care. If compromised, both the validator and nominator can be slashed. Outlining how keys are
+It is paramount that session keys and stash/staking proxy keys are stored and handled with the
+utmost care. If compromised, both the validator and nominator can be slashed. Outlining how keys are
 handled, how they are stored, who has access to them, and the overall policies and procedures around
 them is a great point of reference for nominators to gauge how comfortable they are with the
 security a validator takes.
@@ -256,9 +253,9 @@ person.
 Another way to show that one cares about the network is by actively participating in governance.
 Whether by voting on-chain, or by discussing off-chain, or proposing new things, active
 participation in the direction of the chain is an excellent signal that a validator is there for the
-network’s good. There are many ways to participate in different governance aspects, such as voting
-for council members, weighing in on treasury proposals, voting on public referenda, proposing tips,
-and more. See the section on [governance][] for additional details.
+network’s good. There are many ways to participate in different governance aspects, such as weighing
+in on treasury proposals, voting on public referenda, delegating voting power, and more. See the
+section on [Polkadot OpenGov](../learn/learn-polkadot-opengov.md) for additional details.
 
 #### Producing Educational Content
 
@@ -280,8 +277,4 @@ since the validator then can build a reputation around the quality of their work
 validation services. Some potential building categories are block explorers, deployment scripts,
 monitoring, observability services, staking dashboards, wallets, command-line utilities, or porting
 implementations to other languages. Additionally, this may also be eligible to be funded via a
-[Web3 Foundation Grant](https://github.com/w3f/Grants-Program).
-
-[setting up a validator]: maintain-guides-how-to-validate-Polkadot
-[identity]: ../learn/learn-identity.md#setting-an-identity
-[governance]: maintain-guides-democracy
+[Web3 Foundation Grant](https://grants.web3.foundation).

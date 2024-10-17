@@ -261,24 +261,24 @@ Then restart grafana with `sudo systemctl restart grafana-server`.
 
 :::
 
-![grafana-1](../assets/guides/how-to-monitor/1-grafana-login.png)
+![1-grafana-login](../assets/guides/how-to-monitor/1-grafana-login.png)
 
 In order to visualize the node metrics, click _settings_ to configure the `Data Sources` first.
 
-![grafana-1](../assets/guides/how-to-monitor/2-add-data-source.png)
+![2-add-data-source](../assets/guides/how-to-monitor/2-add-data-source.png)
 
 Click `Add data source` to choose where the data is coming from.
 
-![grafana-1](../assets/guides/how-to-monitor/2-add-data-source-2.png)
+![2-add-data-source-2](../assets/guides/how-to-monitor/2-add-data-source-2.png)
 
 Select `Prometheus`.
 
-![grafana-1](../assets/guides/how-to-monitor/3-select-prometheus.png)
+![3-select-prometheus](../assets/guides/how-to-monitor/3-select-prometheus.png)
 
 The only thing you need to input is the `URL` that is `https://localhost:9090` and then click
 `Save & Test`. If you see `Data source is working`, your connection is configured correctly.
 
-![grafana-1](../assets/guides/how-to-monitor/4-configure-data-source.png)
+![4-configure-data-source](../assets/guides/how-to-monitor/4-configure-data-source.png)
 
 Next, import the dashboard that lets you visualize your node data. Go to the menu bar on the left
 and mouse hover "+" then select `Import`.
@@ -286,21 +286,22 @@ and mouse hover "+" then select `Import`.
 `Import via grafana.com` - It allows you to use a dashboard that someone else has created and made
 public. You can check what other dashboards are available via
 [https://grafana.com/grafana/dashboards](https://grafana.com/grafana/dashboards). In this guide, we
-use ["My Polkadot Metrics"](https://grafana.com/grafana/dashboards/12425), so input "12425" under
-the id field and click `Load`.
+use
+["Substrate Node Metrics"](https://grafana.com/grafana/dashboards/21715-substrate-node-metrics/), so
+input "21715" under the id field and click `Load`.
 
-![grafana-1](../assets/guides/how-to-monitor/5-import-dashboard.png)
+![5-import-dashboard](../assets/guides/how-to-monitor/5-import-dashboard.png)
 
 Once it has been loaded, make sure to select "Prometheus" in the Prometheus dropdown list. Then
 click `Import`.
 
-![grafana-1](../assets/guides/how-to-monitor/5-import-dashboard-2.png)
+![5-import-dashboard-2](../assets/guides/how-to-monitor/5-import-dashboard-2.png)
 
 In the meantime, start your Polkadot node by running `./polkadot`. If everything is done correctly,
-you should be able to monitor your node's performance such as the current block height, CPU, memory
-usage, etc. on the Grafana dashboard.
+you should be able to monitor your node's performance such as the current block height, network
+traffic, running tasks, etc. on the Grafana dashboard.
 
-![grafana-1](../assets/guides/how-to-monitor/6-dashboard-metric.png)
+![6-dashboard-metric](../assets/guides/how-to-monitor/6-dashboard-metric.png)
 
 ## Installing and Configuring Alertmanager (Optional)
 
@@ -312,9 +313,9 @@ node goes down.
 First, download the latest binary of AlertManager and unzip it by running the command below:
 
 ```bash
-wget https://github.com/prometheus/alertmanager/releases/download/v0.21.0/alertmanager-0.21.0.linux-amd64.tar.gz
-tar -xvzf alertmanager-0.21.0.linux-amd64.tar.gz
-mv alertmanager-0.21.0.linux-amd64/alertmanager /usr/local/bin/
+wget https://github.com/prometheus/alertmanager/releases/download/v0.26.0/alertmanager-0.26.0.linux-amd64.tar.gz
+tar -xvzf alertmanager-0.26.0.linux-amd64.tar.gz
+mv alertmanager-0.26.0.linux-amd64/alertmanager /usr/local/bin
 ```
 
 ### Gmail Setup
@@ -364,8 +365,8 @@ receivers:
     send_resolved: true
 ```
 
-With the above configuration, alerts will be sent using the the email you set above. Remember to
-change `YOUR_EMAIL` to your email and paste the app password you just saved earlier to the
+With the above configuration, alerts will be sent using the email you set above. Remember to change
+`YOUR_EMAIL` to your email and paste the app password you just saved earlier to the
 `YOUR_APP_PASSWORD`.
 
 Next, create another `systemd` configuration file named `alertmanager.service` by running the

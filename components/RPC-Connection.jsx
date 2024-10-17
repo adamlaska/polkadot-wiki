@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ApiPromise, WsProvider } from "@polkadot/api";
-import { HumanReadable, Precise, BlocksToDays } from "./utilities/filters";
+import { HumanReadable, Precise, BlocksToDays, ErasToDays, Percentage, PermillToPercent, ArrayLength } from "./utilities/filters";
 
 /*
 This component connects to the Polkadot/Kusama APIs and renders the response data.
@@ -14,8 +14,10 @@ const Polkadot = "polkadot";
 const Kusama = "kusama";
 const Statemine = "statemine";
 const Statemint = "statemint";
+const KusamaPeople = "kusamapeople";
+const PolkadotPeople = "polkadotpeople";
 
-function RPC({ network, path, defaultValue, filter=undefined }) {
+function RPC({ network, path, defaultValue, filter = undefined }) {
 	const [returnValue, setReturnValue] = useState('');
 	network = network.toLowerCase();
 
@@ -38,10 +40,16 @@ function RPC({ network, path, defaultValue, filter=undefined }) {
 				wsUrl = "wss://kusama-rpc.polkadot.io/";
 				break;
 			case Statemine:
-				wsUrl = "wss://statemine-rpc.polkadot.io/";
+				wsUrl = "wss://kusama-asset-hub-rpc.polkadot.io/";
 				break;
 			case Statemint:
-				wsUrl = "wss://statemint-rpc.polkadot.io/";
+				wsUrl = "wss://polkadot-asset-hub-rpc.polkadot.io/";
+				break;
+			case KusamaPeople:
+				wsUrl = "wss://kusama-people-rpc.polkadot.io";
+				break;
+			case PolkadotPeople:
+				wsUrl = "wss://polkadot-people-rpc.polkadot.io";
 				break;
 			default:
 				console.log(`Unknown network provided, ${network}`);
@@ -55,7 +63,7 @@ function RPC({ network, path, defaultValue, filter=undefined }) {
 			const connect = async () => {
 				const newValue = await syncData(network, path, setReturnValue);
 				if (newValue === undefined) {
-					 // There was an issue with the request, use default
+					// There was an issue with the request, use default
 					return;
 				} else if (filter !== undefined) {
 					// Apply filter to retrieved value if a filter is provided
@@ -94,6 +102,12 @@ async function syncData(network, path, setReturnValue) {
 		case "statemint":
 			wsUrl = "wss://statemint-rpc.polkadot.io/";
 			break;
+		case "polkadotpeople":
+			wsUrl = "wss://polkadot-people-rpc.polkadot.io/";
+			break;
+		case "kusamapeople":
+			wsUrl = "wss://kusama-people-rpc.polkadot.io/";
+			break;
 		default:
 			console.log("Unknown socket url provided, no connection made.");
 	}
@@ -109,7 +123,7 @@ async function syncData(network, path, setReturnValue) {
 		// Build API call
 		const pathParameters = path.split(".");
 		pathParameters.forEach(param => {
-			if (param in api){
+			if (param in api) {
 				api = api[param];
 			}
 		});
@@ -136,12 +150,24 @@ function applyFilter(value, filter, network, setReturnValue) {
 	switch (filter) {
 		case "humanReadable":
 			HumanReadable(value, network, setReturnValue);
-    	break;
+			break;
 		case "precise":
 			Precise(value, network, setReturnValue);
 			break;
 		case "blocksToDays":
 			BlocksToDays(value, setReturnValue);
+			break;
+		case "erasToDays":
+			ErasToDays(value, setReturnValue, network);
+			break;
+		case "percentage":
+			Percentage(value, setReturnValue);
+			break;
+		case "permillToPercent":
+			PermillToPercent(value, setReturnValue);
+			break;
+		case "arrayLength":
+			ArrayLength(value, setReturnValue);
 			break;
 		default:
 			console.log("Ignoring unknown filter type");

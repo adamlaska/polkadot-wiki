@@ -16,7 +16,7 @@ If this page does not answer your question, try searching for your problem at th
 [Polkadot Knowledge Base](https://support.polkadot.network/) for more information on troubleshooting
 your issue.
 
-## PolkadotJS Apps Explorer
+## Polkadot-JS Apps Explorer
 
 Here's how to find out the detailed error description through Polkadot-JS Apps.
 
@@ -41,12 +41,13 @@ is a live example of the above.
 If you cannot look up the error this way, or there is no message in the `details` field, consult the
 table below.
 
-## Polkascan and Subscan
+## Subscan
 
-Polkascan and Subscan show the `ExtrinsicFailed` event when a transaction does not succeed
-([example](https://polkascan.io/polkadot/event/2836233-3)). This event gives us the `error` and
-`index` indices of the error but does not give us a nice message to understand what it means. We
-will look up the error in the codebase ourselves to understand what went wrong.
+The `ExtrinsicFailed` event indicates when a transaction does not succeed
+([example](https://polkadot.subscan.io/extrinsic/19983878-2?event=19983878-53)). This event gives us
+the `error` and `index` (as seen in the table of the event, in the `dispatch_error` row) indices of
+the error but does not give us a nice message to understand what it means. We will look up the error
+in the codebase ourselves to understand what went wrong.
 
 First, we should understand that the `index` number is the index of the pallet in the runtime from
 which the error originated. The `error` is likewise the index of that pallet's errors which is the
@@ -56,7 +57,7 @@ For example, if `index` is 5 and `error` is 3, as in the example linked above, w
 the runtime for the fourth error (index 3) in the sixth pallet (index 5).
 
 By looking at the
-[runtime code](https://github.com/paritytech/polkadot/blob/master/runtime/polkadot/src/lib.rs) we
+[runtime code](https://github.com/polkadot-fellows/runtimes/blob/main/relay/polkadot/src/lib.rs) we
 see that the pallet at index 5 is `Balances`. Now we will check the Balances pallet's code which is
 hosted in the Substrate repository, and look for the fourth error in the `Error enum`. According to
 its source the error that we got is `InsufficientBalance`, or in other words, "Balance too low to
@@ -90,6 +91,7 @@ some other error (ex. the validity period expires).\*
 The below table is a reference to the errors that exists in Polkadot. It is generated from the
 runtime's metadata.
 
+<!-- prettier-ignore-start -->
 | Pallet                  | Error                                  | Documentation                                                                                                                                    |
 | ----------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | System (0)              |                                        |                                                                                                                                                  |
@@ -164,10 +166,7 @@ runtime's metadata.
 |                         | TooSoon (3)                            | Cannot signal forced change so soon after last.                                                                                                  |
 |                         | InvalidKeyOwnershipProof (4)           | A key ownership proof provided as part of an equivocation report is invalid.                                                                     |
 |                         | InvalidEquivocationProof (5)           | An equivocation proof provided as part of an equivocation report is invalid.                                                                     |
-|                         | DuplicateOffenceReport (6)             | A given equivocation report is valid but already previously reported.                                                                            |
-| ImOnline (12)           |                                        |                                                                                                                                                  |
-|                         | InvalidKey (0)                         | Non existent public key.                                                                                                                         |
-|                         | DuplicatedHeartbeat (1)                | Duplicated heartbeat.                                                                                                                            |
+|                         | DuplicateOffenceReport (6)             | A given equivocation report is valid but already previously reported.                                                                            |     |
 | Democracy (14)          |                                        |                                                                                                                                                  |
 |                         | ValueLow (0)                           | Value too low                                                                                                                                    |
 |                         | ProposalMissing (1)                    | Proposal does not exist                                                                                                                          |
@@ -309,3 +308,4 @@ runtime's metadata.
 |                         | UnexpectedTimepoint (11)               | A timepoint was given, yet no multisig operation is underway.                                                                                    |
 |                         | WeightTooLow (12)                      | The maximum weight information provided was too low.                                                                                             |
 |                         | AlreadyStored (13)                     | The data to be stored is already stored.                                                                                                         |
+<!-- prettier-ignore-end -->

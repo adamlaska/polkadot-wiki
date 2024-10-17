@@ -9,14 +9,11 @@ slug: ../maintain-guides-how-to-validate-polkadot
 
 import RPC from "./../../components/RPC-Connection";
 
-import MinimumStake from "./../../components/Minimum-Stake";
+:::tip
 
-:::info
-
-The following information applies to the Polkadot network. If you want to set up a validator on
-Kusama, check out the [Kusama guide](kusama/maintain-guides-how-to-validate-kusama.md) instead.
-
-This guide will instruct you how to set up a validator node on the Polkadot network.
+If you are a beginner, it is recommended that you start your validator journey on Kusama network.
+Check the [Kusama guide](kusama/maintain-guides-how-to-validate-kusama.md) for details on how to get
+started.
 
 :::
 
@@ -24,9 +21,9 @@ This guide will instruct you how to set up a validator node on the Polkadot netw
 
 Running a validator on a live network is a lot of responsibility! You will be accountable for not
 only your own stake, but also the stake of your current nominators. If you make a mistake and get
-slashed, your money and your reputation will be at risk. However, running a validator can also be
-very rewarding, knowing that you contribute to the security of a decentralized network while growing
-your stash.
+[slashed](../learn/learn-offenses.md), your tokens and your reputation will be at risk. However,
+running a validator can also be very rewarding, knowing that you contribute to the security of a
+decentralized network while growing your stash.
 
 :::warning
 
@@ -40,56 +37,41 @@ tackle yourself. Being a validator involves more than just executing the Polkado
 
 Since security is so important to running a successful validator, you should take a look at the
 [secure validator](maintain-guides-secure-validator.md) information to make sure you understand the
-factors to consider when constructing your infrastructure. Web3 Foundation also maintains a
-[reference implementation for a validator set-up](https://github.com/w3f/polkadot-validator-setup)
-that you can use by deploying yourself (video walkthrough is available
-[here](https://www.youtube.com/watch?v=tTn8P6t7JYc)). As you progress in your journey as a
+factors to consider when constructing your infrastructure. As you progress in your journey as a
 validator, you will likely want to use this repository as a _starting point_ for your own
 modifications and customizations.
 
 If you need help, please reach out on the
-[Polkadot Validator Lounge](https://matrix.to/#/!NZrbtteFeqYKCUGQtr:matrix.parity.io?via=matrix.parity.io&via=matrix.org&via=web3.foundation)
-on Riot. The team and other validators are there to help answer questions and provide tips from
+[Polkadot Validator Lounge](https://matrix.to/#/#polkadotvalidatorlounge:web3.foundation) on
+Element. The team and other validators are there to help answer questions and provide tips from
 experience.
 
-### How many DOT do I need?
+### How many DOT do I need to become an active Validator?
 
 You can have a rough estimate on that by using the methods listed
 [here](../general/faq.md/#what-is-the-minimum-stake-necessary-to-be-elected-as-an-active-validator).
 To be elected into the set, you need a minimum stake behind your validator. This stake can come from
 yourself or from [nominators](../learn/learn-nominator.md). This means that as a minimum, you will
-need enough DOT to set up Stash and Controller [accounts](../learn/learn-cryptography.md) with the
-existential deposit, plus a little extra for transaction fees. The rest can come from nominators. To
-understand how validators are elected, check the
-[NPoS Election algorithms](../learn/learn-phragmen.md) page.
+need enough DOT to set up stash (and optionally a staking
+[proxy account](../learn/learn-proxies.md)) with the existential deposit, plus a little extra for
+transaction fees. The rest can come from nominators. To understand how validators are elected, check
+the [NPoS Election algorithms](../learn/learn-phragmen.md) page.
 
-:::info On-Chain Data for Reference
+For further reference, you may look at the
+[statistics for current, active validators](https://polkadot.subscan.io/validator_list?status=validator).
+For Kusama see [here](https://kusama.subscan.io/validator_list?status=validator).
 
-On Polkadot, the minimum stake backing a validator in the active set is
-{{ polkadot: <MinimumStake network="polkadot" defaultValue={18684315524834056}/> :polkadot }}
-{{ kusama: <MinimumStake network="polkadot" defaultValue={18684315524834056}/> :kusama }} in the era
-{{ polkadot: <RPC network="polkadot" path="query.staking.currentEra" defaultValue="799"/>. :polkadot }}
-{{ kusama: <RPC network="polkadot" path="query.staking.currentEra" defaultValue="799"/>. :kusama }}
-
-On Kusama, the minimum stake backing a validator in the active set is
-{{ kusama: <MinimumStake network="kusama" defaultValue={5367388652143741} /> :kusama }}
-{{ polkadot: <MinimumStake network="kusama" defaultValue={5367388652143741} /> :polkadot }} in the
-era
-{{ kusama: <RPC network="kusama" path="query.staking.currentEra" defaultValue="4058"/>. :kusama }}
-{{ polkadot: <RPC network="kusama" path="query.staking.currentEra" defaultValue="4058"/>. :polkadot }}
-:::
-
-**Warning:** Any DOT that you stake for your validator is liable to be slashed, meaning that an
-insecure or improper setup may result in loss of DOT tokens! If you are not confident in your
-ability to run a validator node, it is recommended to nominate your DOT to a trusted validator node
-instead.
+**Warning:** Any DOT that you stake for your validator is liable to be
+[slashed](../learn/learn-offenses.md), meaning that an insecure or improper setup may result in loss
+of DOT tokens! If you are not confident in your ability to run a validator node, it is recommended
+to nominate your DOT to a trusted validator node instead.
 
 ## Initial Set-up
 
 ### Requirements
 
 The most common way for a beginner to run a validator is on a cloud server running Linux. You may
-choose whatever [VPS](#note-about-vps) provider that your prefer. As OS it is best to use a recent
+choose whatever [VPS](#note-about-vps) provider that you prefer. As OS it is best to use a recent
 Debian Linux. For this guide we will be using **Ubuntu 22.04**, but the instructions should be
 similar for other platforms.
 
@@ -97,7 +79,7 @@ similar for other platforms.
 
 The transaction weights in Polkadot are benchmarked on reference hardware. We ran the benchmark on
 VM instances of two major cloud providers: Google Cloud Platform (GCP) and Amazon Web Services
-(AWS). To be specific, we used `c2d-highcpu-8` VM instance on GCP and `c6id.2xlarge` on AWS. It is
+(AWS). To be specific, we used `n2-standard-8` VM instance on GCP and `c6i.4xlarge` on AWS. It is
 recommended that the hardware used to run the validators at least matches the specs of the reference
 hardware in order to ensure they are able to process all blocks in time. If you use subpar hardware
 you will possibly run into performance issues, get less era points, and potentially even get
@@ -106,16 +88,19 @@ slashed.
 - **CPU**
   - x86-64 compatible;
   - Intel Ice Lake, or newer (Xeon or Core series); AMD Zen3, or newer (EPYC or Ryzen);
-  - 4 physical cores @ 3.4GHz;
+  - ~4~ 8 physical cores @ 3.4GHz; starting with January 2025, the recommendation is to use a
+    hardware with at least **8** physical cores, see
+    [referenda](https://polkadot.subsquare.io/referenda/1051) for more details about the rationale;
   - Simultaneous multithreading disabled (Hyper-Threading on Intel, SMT on AMD);
   - Prefer single-threaded performance over higher cores count. A comparison of single-threaded
     performance can be found [here](https://www.cpubenchmark.net/singleThread.html).
 - **Storage**
   - An NVMe SSD of 1 TB (As it should be reasonably sized to deal with blockchain growth). An
-    estimation of current chain snapshot sizes can be found [here](https://paranodes.io/DBSize). In
-    general, the latency is more important than the throughput.
+    estimation of current chain snapshot sizes can be found
+    [here](https://stakeworld.io/docs/dbsize). In general, the latency is more important than the
+    throughput.
 - **Memory**
-  - 16GB DDR4 ECC.
+  - 32 GB DDR4 ECC.
 - **System**
   - Linux Kernel 5.16 or newer.
 - **Network**
@@ -127,10 +112,153 @@ The specs posted above are not a _hard_ requirement to run a validator, but are 
 practice. Running a validator is a responsible task; using professional hardware is a must in any
 way.
 
-### Node Prerequisites: Install Rust and Dependencies
+### Install & Configure Network Time Protocol (NTP) Client
 
-Once you choose your cloud service provider and set-up your new server, the first thing you will do
-is install Rust.
+[NTP](https://en.wikipedia.org/wiki/Network_Time_Protocol) is a networking protocol designed to
+synchronize the clocks of computers over a network. NTP allows you to synchronize the clocks of all
+the systems within the network. Currently it is required that validators' local clocks stay
+reasonably in sync, so you should be running NTP or a similar service. You can check whether you
+have the NTP client by running:
+
+_If you are using Ubuntu 18.04 or a newer version, NTP Client should be installed by default._
+
+```sh
+timedatectl
+```
+
+If NTP is installed and running, you should see `System clock synchronized: yes` (or a similar
+message). If you do not see it, you can install it by executing:
+
+```sh
+sudo apt-get install ntp
+```
+
+ntpd will be started automatically after install. You can query ntpd for status information to
+verify that everything is working:
+
+```sh
+sudo ntpq -p
+```
+
+:::warning
+
+Skipping this can result in the validator node missing block authorship opportunities. If the clock
+is out of sync (even by a small amount), the blocks the validator produces may not get accepted by
+the network.
+
+:::
+
+### Make Sure Landlock is Enabled
+
+[Landlock](https://docs.kernel.org/userspace-api/landlock.html) is a Linux security feature used in
+Polkadot:
+
+> Landlock empowers any process, including unprivileged ones, to securely restrict themselves.
+
+To make use of landlock, make sure you are on the reference kernel version or newer. Most Linux
+distributions should already have landlock enabled, but you can check by running the following as
+root:
+
+```sh
+dmesg | grep landlock || journalctl -kg landlock
+```
+
+If it is not enabled, please see the
+[official docs ("Kernel support")](https://docs.kernel.org/userspace-api/landlock.html#kernel-support)
+if you would like to build Linux with landlock enabled.
+
+### Installing the Polkadot binaries
+
+:::info Multiple Validator Binaries
+
+In addition to the `polkadot` binary, recent changes have separated out functionality into two
+additional needed binaries, `polkadot-prepare-worker`, and `polkadot-execute-worker`. All three
+binaries are needed to properly run a validator node. More context on these changes can be found
+[here](https://github.com/paritytech/polkadot/pull/7337)
+
+:::
+
+#### Installation from official releases
+
+The official binaries can be downloaded from the
+[Github Releases](https://github.com/paritytech/polkadot-sdk/releases). You should download the
+latest available version. You can also download the binaries by using the following direct links
+(replace X.Y.Z by the appropriate version):
+
+```sh
+https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-vX.Y.Z/polkadot
+https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-vX.Y.Z/polkadot-execute-worker
+https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-vX.Y.Z/polkadot-prepare-worker
+```
+
+#### Optional: Installation with Package Managers
+
+The Polkadot Binary in included in `Debian` derivatives (i.e. **Debian**, **Ubuntu**) and
+`RPM-based` distros (i.e. **Fedora**, **CentOS**).
+
+#### Debian-based (Debian, Ubuntu)
+
+Run the following commands as the root user:
+
+```ssh
+# Import the security@parity.io GPG key
+gpg --recv-keys --keyserver hkps://keys.mailvelope.com 9D4B2B6EB8F97156D19669A9FF0812D491B96798
+gpg --export 9D4B2B6EB8F97156D19669A9FF0812D491B96798 > /usr/share/keyrings/parity.gpg
+# Add the Parity repository and update the package index
+echo 'deb [signed-by=/usr/share/keyrings/parity.gpg] https://releases.parity.io/deb release main' > /etc/apt/sources.list.d/parity.list
+apt update
+# Install the `parity-keyring` package - This will ensure the GPG key
+# used by APT remains up-to-date
+apt install parity-keyring
+# Install polkadot
+apt install polkadot
+```
+
+#### RPM-based (Fedora, CentOS)
+
+Run the following commands as the root user:
+
+```bash
+# Install dnf-plugins-core (This might already be installed)
+dnf install dnf-plugins-core
+# Add the repository and enable it
+dnf config-manager --add-repo https://releases.parity.io/rpm/polkadot.repo
+dnf config-manager --set-enabled polkadot
+# Install polkadot (You may have to confirm the import of the GPG key, which
+# should have the following fingerprint: 9D4B2B6EB8F97156D19669A9FF0812D491B96798)
+dnf install polkadot
+```
+
+Make sure you verify the installation (see the "Verify the installation" section).
+
+:::note By default, the Polkadot systemd service is disabled
+
+To start the service, run:
+
+```bash
+sudo systemctl start polkadot.service
+```
+
+:::
+
+#### Optional: Installation with Ansible
+
+To manage Polkadot installation with Ansible, you can use the **Substrate node role** distributed on
+the [Parity chain operations Ansible collection](https://github.com/paritytech/ansible-galaxy/)
+
+#### Optional: Installation with Docker
+
+To run Polkadot on a Docker or an OCI compatible container runtime, you can use the official
+[parity/polkadot docker image](https://hub.docker.com/r/parity/polkadot/tags), available on Docker
+Hub (replace X.Y.Z by the appropriate version):
+
+```sh
+docker.io/parity/polkadot:vX.Y.Z
+```
+
+### Optional: Building the Polkadot binaries from sources
+
+#### Prerequisites: Install Rust and Dependencies
 
 If you have never installed Rust, you should do this first.
 
@@ -180,137 +308,40 @@ Polkadot node software.
 sudo apt install make clang pkg-config libssl-dev build-essential
 ```
 
-Note - if you are using OSX and you have [Homebrew](https://brew.sh) installed, you can issue the
-following equivalent command INSTEAD of the previous one:
+:::note
+
+If you are using OSX and you have [Homebrew](https://brew.sh) installed, you can issue the following
+equivalent command INSTEAD of the previous one:
 
 ```sh
 brew install cmake pkg-config openssl git llvm
 ```
 
-### Install & Configure Network Time Protocol (NTP) Client
-
-[NTP](https://en.wikipedia.org/wiki/Network_Time_Protocol) is a networking protocol designed to
-synchronize the clocks of computers over a network. NTP allows you to synchronize the clocks of all
-the systems within the network. Currently it is required that validators' local clocks stay
-reasonably in sync, so you should be running NTP or a similar service. You can check whether you
-have the NTP client by running:
-
-_If you are using Ubuntu 18.04 or a newer version, NTP Client should be installed by default._
-
-```sh
-timedatectl
-```
-
-If NTP is installed and running, you should see `System clock synchronized: yes` (or a similar
-message). If you do not see it, you can install it by executing:
-
-```sh
-sudo apt-get install ntp
-```
-
-ntpd will be started automatically after install. You can query ntpd for status information to
-verify that everything is working:
-
-```sh
-sudo ntpq -p
-```
-
-:::warning
-
-Skipping this can result in the validator node missing block authorship opportunities. If the clock
-is out of sync (even by a small amount), the blocks the validator produces may not get accepted by
-the network. This will result in `ImOnline` heartbeats making it on chain, but zero allocated blocks
-making it on chain.
-
 :::
 
-### Building and Installing the `polkadot` binary
+#### Building the binaries
 
-#### Optional: Installation via Package Managers
+You can build the Polkadot binaries from the
+[paritytech/polkadot-sdk](https://github.com/paritytech/polkadot-sdk) repository on GitHub.
 
-The Polkadot Binary in included in `Debian` derivatives (i.e. **Debian**, **Ubuntu**) and
-`RPM-based` distros (i.e. **Fedora**, **CentOS**).
-
-#### Debian-based (Debian, Ubuntu)
-
-Run the following commands as the root user:
-
-```ssh
-# Import the security@parity.io GPG key
-gpg --recv-keys --keyserver hkps://keys.mailvelope.com 9D4B2B6EB8F97156D19669A9FF0812D491B96798
-gpg --export 9D4B2B6EB8F97156D19669A9FF0812D491B96798 > /usr/share/keyrings/parity.gpg
-# Add the Parity repository and update the package index
-echo 'deb [signed-by=/usr/share/keyrings/parity.gpg] https://releases.parity.io/deb release main' > /etc/apt/sources.list.d/parity.list
-apt update
-# Install the `parity-keyring` package - This will ensure the GPG key
-# used by APT remains up-to-date
-apt install parity-keyring
-# Install polkadot
-apt install polkadot
-```
-
-#### RPM-based (Fedora, CentOS)
-
-Run the following commands as the root user:
-
-```bash
-# Install dnf-plugins-core (This might already be installed)
-dnf install dnf-plugins-core
-# Add the repository and enable it
-dnf config-manager --add-repo https://releases.parity.io/rpm/polkadot.repo
-dnf config-manager --set-enabled polkadot
-# Install polkadot (You may have to confirm the import of the GPG key, which
-# should have the following fingerprint: 9D4B2B6EB8F97156D19669A9FF0812D491B96798)
-dnf install polkadot
-```
-
-After installing Polkadot, you can verify the installation by running
-
-```bash
-which polkadot
-```
-
-It should return
-
-```bash
-/usr/bin/polkadot
-```
-
-:::note By default, the Polkadot systemd service is disabled
-
-To start the service, run:
-
-```bash
-sudo systemctl start polkadot.service
-```
-
-:::
-
-### Polkadot Binary
-
-You will need to build the `polkadot` binary from the
-[paritytech/polkadot](https://github.com/paritytech/polkadot) repository on GitHub using the source
-code available in the **v0.9** branch.
-
-You should generally use the latest **0.9.x** tag. You should either review the output from the "git
-tag" command or visit the [Releases](https://github.com/paritytech/polkadot/releases) to see a list
-of all the potential 0.9 releases. You should replace `VERSION` below with the latest build (i.e.,
-the highest number). You can also find the latest Kusama version on the
-[release](https://github.com/paritytech/polkadot/releases) tab.
+You should generally use the latest **X.Y.Z** tag. You should either review the output from the "git
+tag" command or view the [Polkadot SDK Github tags](https://github.com/paritytech/polkadot-sdk/tags)
+to see a list of all the available release versions. You should replace `VERSION` below with the
+latest build (i.e., the highest number).
 
 :::note
 
 If you prefer to use SSH rather than HTTPS, you can replace the first line of the below with
 
 ```sh
-git clone git@github.com:paritytech/polkadot.git
+git clone git@github.com:paritytech/polkadot-sdk.git
 ```
 
 :::
 
 ```sh
-git clone https://github.com/paritytech/polkadot.git
-cd polkadot
+git clone https://github.com/paritytech/polkadot-sdk.git
+cd polkadot-sdk/polkadot
 ```
 
 Run the following command to find the latest version.
@@ -319,17 +350,17 @@ Run the following command to find the latest version.
 git tag -l | sort -V | grep -v -- '-rc'
 ```
 
-Find the latest version; replace "VERSION" in the commmand below and run to change your branch.
+Find the latest version; replace "VERSION" in the command below and run to change your branch.
 
 ```sh
 git checkout VERSION
-./scripts/init.sh
 ```
 
-Build native code with the production profile.
+Build native code with the production profile. The following will make sure that the binaries are
+all in your `$PATH`.
 
 ```sh
-cargo build --profile production
+cargo install --force --path . --profile production
 ```
 
 **_This step will take a while (generally 10 - 40 minutes, depending on your hardware)._**
@@ -361,8 +392,30 @@ directory. You may then take the generated `subkey` executable and transfer it t
 machine for extra security.
 
 ```sh
-cargo install --force --git https://github.com/paritytech/substrate subkey
+cargo install --force --git https://github.com/paritytech/polkadot-sdk subkey
 ```
+
+### Verify the installation
+
+After installing Polkadot, you can verify the installation by running
+
+```bash
+polkadot --version
+polkadot-execute-worker --version
+polkadot-prepare-worker --version
+```
+
+It should return something like this (the exact versions don't matter, but they must all be the
+same):
+
+```bash
+0.9.43-36264cb36db
+0.9.43-36264cb36db
+0.9.43-36264cb36db
+```
+
+If not, make sure that you installed all the binaries, all the binaries are somewhere in your
+`$PATH` and they are all in the same folder.
 
 ### Synchronize Chain Data
 
@@ -370,8 +423,19 @@ You can begin syncing your node by running the following command if you do not w
 validator mode right away:
 
 ```sh
-./target/production/polkadot
+polkadot
 ```
+
+:::info
+
+If you want to run a validator on Kusama, you have an option to specify the chain. With no
+specification, this would default to Polkadot.
+
+```sh
+polkadot --chain=kusama
+```
+
+:::
 
 ```
 2021-06-17 03:07:07 Parity Polkadot
@@ -412,7 +476,9 @@ authority set changes in order to arrive at a specific (usually the most recent)
 desired header has been reached and verified, the state can be downloaded and imported. Once this
 process has been completed, the node can proceed with a full sync.
 
-`./target/production/polkadot --sync warp`
+```sh
+polkadot --sync warp
+```
 
 `Warp sync` initially downloads and validates the finality proofs from
 [GRANDPA](../learn/learn-consensus.md#finality-gadget-grandpa) and then downloads the state of the
@@ -452,7 +518,7 @@ Snapshots are compressed backups of the database directory of Polkadot/Kusama no
 whole chain (or a pruned version of it, with states only from the latest 1000 or 256 blocks). Listed
 below are a few public snapshot providers for Polkadot and Kusama.
 
-- [STAKEWORLD](https://stakeworld.nl/docs/snapshot)
+- [Stakeworld](https://stakeworld.io/snapshot)
 - [Polkachu](https://polkachu.com/snapshots)
 - [Polkashots](https://polkashots.io/)
 
@@ -467,30 +533,30 @@ a non-canonical chain.
 
 ## Bond DOT
 
-It is highly recommended that you make your controller and stash accounts be two separate accounts.
-For this, you will create two accounts and make sure each of them have at least enough funds to pay
-the fees for making transactions. Keep most of your funds in the stash account since it is meant to
-be the custodian of your staking funds.
+There is a [minimum bond](../general/chain-state-values.md#minimum-validator-bond) to start a
+validator instance, but to enter the active validator set and be eligible to earn rewards, your
+validator node should be nominated by a minimum number of DOT tokens.
 
-Make sure not to bond all your DOT balance since you will be unable to pay transaction fees from
-your bonded balance.
+If you are validator who intends to get DOT/KSM nominations from the community, you will need to
+show some skin in the game. For that, you need to bond some DOT/KSM as own stake. Make sure not to
+bond all your DOT balance since you will be unable to pay transaction fees from your bonded balance.
 
-It is now time to set up our validator. We will do the following:
+:::info Controller accounts are deprecated. Use Staking Proxy.
 
-- Bond the DOT of the Stash account. These DOT will be put at stake for the security of the network
-  and can be slashed.
-- Select the Controller. This is the account that will decide when to start or stop validating.
+Controller accounts are deprecated. For more information, see
+[this discussion](https://forum.polkadot.network/t/staking-controller-deprecation-plan-staking-ui-leads-comms/2748).
+It is highly recommended that you setup an account with a staking proxy, which can be used for
+issuing start and stop validating calls. Read more about [proxy accounts](../learn/learn-proxies.md)
+here.
+
+:::
 
 First, go to the [Staking](https://polkadot.js.org/apps/#/staking/actions) section. Click on
 "Account Actions", and then the "+ Stash" button.
 
-![dashboard bonding](../assets/guides/how-to-validate/polkadot-dashboard-bonding.png)
+![bonding-JS-UI](../assets/JS-UI-bond.png)
 
-- **Stash account** - Select your Stash account. In this example, we will bond 1 DOT, where the
-  minimum bonding amount is 1. Make sure that your Stash account contains _at least_ this much. You
-  can, of course, stake more than this.
-- **Controller account** - Select the Controller account created earlier. This account will also
-  need a small amount of DOT in order to start and stop validating.
+- **Stash account** - Select your Stash account (which is the account with the DOT/KSM balance)
 - **Value bonded** - How much DOT from the Stash account you want to bond/stake. Note that you do
   not need to bond all of the DOT in that account. Also note that you can always bond _more_ DOT
   later. However, _withdrawing_ any bonded amount requires the duration of the unbonding period. On
@@ -498,22 +564,20 @@ First, go to the [Staking](https://polkadot.js.org/apps/#/staking/actions) secti
 - **Payment destination** - The account where the rewards from validating are sent. More info
   [here](../learn/learn-staking.md/#reward-distribution). Starting with runtime version v23 natively
   included in client version [0.9.3](https://github.com/paritytech/polkadot/releases/tag/v0.9.3),
-  payouts can go to any custom address. If you'd like to redirect payments to an account that is
-  neither the controller nor the stash account, set one up. Note that it is extremely unsafe to set
-  an exchange address as the recipient of the staking rewards.
+  payouts can go to any custom address. If you'd like to redirect payments to an account that is not
+  the stash account, you can do it by entering the address here. Note that it is extremely unsafe to
+  set an exchange address as the recipient of the staking rewards.
 
 Once everything is filled in properly, click `Bond` and sign the transaction with your Stash
 account.
 
-![sign transaction](../assets/guides/how-to-validate/polkadot-authorize-transaction-stash.png)
+![sign transaction](../assets/JS-UI-sign-transaction.png)
 
 After a few seconds, you should see an `ExtrinsicSuccess` message.
 
-Your bonded account will available under `Stashes`. You should now see a new card with all your
+Your bonded account will be available under `Stashes`. You should now see a new card with all your
 accounts (note: you may need to refresh the screen). The bonded amount on the right corresponds to
 the funds bonded by the Stash account.
-
-![stash overview](../assets/guides/how-to-validate/polkadot-stash-overview.png)
 
 ## Set Session Keys
 
@@ -532,7 +596,7 @@ Once your node is fully synced, stop the process by pressing Ctrl-C. At your ter
 will now start running the node.
 
 ```sh
-./target/release/polkadot --validator --name "name on telemetry"
+polkadot --validator --name "name on telemetry"
 ```
 
 Similarly:
@@ -565,12 +629,12 @@ people are using telemetry, it is recommended that you choose something likely t
 ### Generating the Session Keys
 
 You need to tell the chain your Session keys by signing and submitting an extrinsic. This is what
-associates your validator node with your Controller account on Polkadot.
+associates your validator node with your stash account on Polkadot.
 
 #### Option 1: PolkadotJS-APPS
 
-You can generate your [Session keys](../learn/learn-cryptography.md) in the client via the apps
-RPC. If you are doing this, make sure that you have the PolkadotJS-Apps explorer attached to your
+You can generate your [Session keys](../learn/learn-cryptography.md) in the client via the apps RPC.
+If you are doing this, make sure that you have the PolkadotJS-Apps explorer attached to your
 validator node. You can configure the apps dashboard to connect to the endpoint of your validator in
 the Settings tab. If you are connected to a default endpoint hosted by Parity of Web3 Foundation,
 you will not be able to use this method since making RPC requests to this node would effect the
@@ -590,7 +654,7 @@ If you are on a remote server, it is easier to run this command on the same mach
 is running with the default WS RPC port configured):
 
 ```sh
-echo '{"id":1,"jsonrpc":"2.0","method":"author_rotateKeys","params":[]}' | websocat -n1 -B 99999999 ws://127.0.0.1:9944
+curl -H "Content-Type: application/json" -d '{"id":1, "jsonrpc":"2.0", "method": "author_rotateKeys", "params":[]}' http://localhost:9944
 ```
 
 The output will have a hex-encoded "result" field. The result is the concatenation of the four
@@ -601,7 +665,7 @@ You can restart your node at this point.
 ### Submitting the `setKeys` Transaction
 
 You need to tell the chain your Session keys by signing and submitting an extrinsic. This is what
-associates your validator with your Controller account.
+associates your validator with your staking proxy.
 
 Go to [Staking > Account Actions](https://polkadot.js.org/apps/#/staking/actions), and click "Set
 Session Key" on the bonding account you generated earlier. Enter the output from `author_rotateKeys`
@@ -612,6 +676,32 @@ in the field and click "Set Session Key".
 
 Submit this extrinsic and you are now ready to start validating.
 
+### Setting the Node (aka Network) Key
+
+Validators must use a static network key to maintain a stable node identity across restarts.
+Starting with Polkadot version 1.11, a check is performed on startup, and the following error will
+be printed if a static node key is not set:
+
+```
+Error:
+0: Starting an authority without network key
+This is not a safe operation because other authorities in the network may depend on your node having a stable identity.
+Otherwise these other authorities may not being able to reach you.
+
+If it is the first time running your node you could use one of the following methods:
+1. [Preferred] Separately generate the key with: <NODE_BINARY> key generate-node-key --base-path <YOUR_BASE_PATH>
+2. [Preferred] Separately generate the key with: <NODE_BINARY> key generate-node-key --file <YOUR_PATH_TO_NODE_KEY>
+3. [Preferred] Separately generate the key with: <NODE_BINARY> key generate-node-key --default-base-path
+4. [Unsafe] Pass --unsafe-force-node-key-generation and make sure you remove it for subsequent node restarts"
+```
+
+The recommended solution is to generate a node key and save it to a file using
+`polkadot key generate-node-key --file <PATH_TO_NODE_KEY>`, then attach it to your node with
+`--node-key-file <PATH_TO_NODE_KEY>`.
+
+Please see [polkadot-sdk#3852](https://github.com/paritytech/polkadot-sdk/pull/3852) for the
+rationale behind this change.
+
 ## Validate
 
 To verify that your node is live and synchronized, head to
@@ -620,11 +710,11 @@ will show all nodes on the Polkadot network, which is why it is important to sel
 
 In this example, we used the name `techedtest` and have successfully located it upon searching:
 
-![dashboard validate](../assets/guides/how-to-validate/polkadot-dashboard-telemetry.png)
+![polkadot-dashboard-telemetry](../assets/guides/how-to-validate/polkadot-dashboard-telemetry.png)
 
 ### Setup via Validator Tab
 
-![dashboard validate](../assets/guides/how-to-validate/polkadot-dashboard-validate-1.png)
+![polkadot-dashboard-validate-1](../assets/guides/how-to-validate/polkadot-dashboard-validate-1.png)
 
 Here you will need to input the Keys from `rotateKeys`, which is the Hex output from
 `author_rotateKeys`. The keys will show as pending until applied at the start of a new session.
@@ -669,8 +759,23 @@ validator set, you are now running a Polkadot validator! If you need help, reach
 ## Thousand Validators Programme
 
 The Thousand Validators Programme is a joint initiative by Web3 Foundation and Parity Technologies
-to provide support for community validators. If you are interested in applying for the programme,
-you can find more information [on the wiki page](../general/thousand-validators.md).
+to provide support for community validators. If you are interested in applying for the program, you
+can find more information [on the wiki page](../general/thousand-validators.md).
+
+## Running a validator on a testnet
+
+To verify your validator setup, it is possible to run it against a PoS test network such as Westend.
+However, validator slots are intentionally limited on Westend to ensure stability and availability
+of the testnet for the Polkadot release process.
+
+Here is a small comparison of each network characteristics as relevant to validators:
+
+| Network           | Polkadot | Westend    |
+| ----------------- | -------- | ---------- |
+| epoch             | 4h       | 1h         |
+| era               | 1d       | 6h         |
+| token             | DOT      | WND (test) |
+| active validators | ~300     | ~20        |
 
 ## FAQ
 
@@ -684,7 +789,7 @@ other peers over the network.
 ### How do I clear all my chain data?
 
 ```sh
-./target/release/polkadot purge-chain
+polkadot purge-chain
 ```
 
 :::info
@@ -772,7 +877,7 @@ As demonstrated in
 [Yusuke Endoh's article](http://mamememo.blogspot.com/2020/05/cpu-intensive-rubypython-code-runs.html),
 a performance penalty for containerized workloads can be as high as 100%. This is due to SECCOMP
 profile being overprotective about applying Spectre/Meltdown mitigations without providing real
-security. A longer explanation is a available in the
+security. A longer explanation is available in the
 [kernel patch discussion](https://lkml.org/lkml/2020/11/4/1135).
 
 Linux 5.16
@@ -826,12 +931,3 @@ instance, Digital Ocean lists "Mining of Cryptocurrencies" under the Network Abu
 explicit permission to do so. This may extend to other cryptocurrency activity.
 
 :::
-
-## Using Docker
-
-If you have Docker installed, you can use it to start your validator node without needing to build
-the binary. You can do this with a simple one line command:
-
-```sh
-$ docker run parity/polkadot:latest --validator --name "name on telemetry"
-```

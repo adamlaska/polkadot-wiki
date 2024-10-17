@@ -2,118 +2,99 @@
 id: learn-staking-advanced
 title: Advanced Staking Concepts
 sidebar_label: Advanced Staking Concepts
-description: Advanced staking information
+description: Advanced Concepts about Staking on Polkadot.
 
-keywords: [staking, stake, nominate, nominating, NPoS, proxies, payouts, simple payouts, rewards]
+keywords:
+  [
+    staking,
+    stake,
+    nominate,
+    nominating,
+    NPoS,
+    proxies,
+    payouts,
+    simple payouts,
+    rewards,
+    staking miner,
+    phragmén,
+  ]
 slug: ../learn-staking-advanced
 ---
-
-import RPC from "./../../components/RPC-Connection";
 
 :::tip New to Staking?
 
 Start your staking journey or explore more information about staking on
 [Polkadot's Home Page](https://polkadot.network/staking/). Discover the new
-[Staking Dashboard](https://staking.polkadot.network/#/overview) that makes staking much easier and
+[Staking Dashboard](https://staking.polkadot.cloud/#/overview) that makes staking much easier and
 check this
 [extensive article list](https://support.polkadot.network/support/solutions/articles/65000182104) to
-help you get started. You can now stake on
-{{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }} natively with just
-{{ polkadot: <RPC network="polkadot" path="query.nomiationPools.minJoinBond" filter="humanReadable" defaultValue={10000000000}/> :polkadot }}
-{{ kusama: <RPC network="kusama" path="query.nomiationPools.minJoinBond" filter="humanReadable" defaultValue={1666666650}/> :kusama }}
+help you get started. You can now stake natively with a
+[small number of tokens](../general/chain-state-values.md#minimum-bond-to-join-a-nomination-pool)
 and earn staking rewards. For additional information, check out
 [this blog post](https://polkadot.network/blog/nomination-pools-are-live-stake-natively-with-just-1-dot/).
 
 :::
 
-This page is meant to be an advanced guide to staking with
-{{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }}. For a more general introduction,
-checkout the [Introduction to Staking](./learn-staking.md) page.
+This page is meant to be an advanced guide to staking with the relay chain. For a more general
+introduction, checkout the [Introduction to Staking](./learn-staking.md) page.
 
 ## Staking Proxies
 
-:::info Walk-through video tutorial
-
-In this section, we go through a couple of scenarios that show how the permissions to sign for
-staking-related actions by stash account, controller account, and staking proxy change according to
-their relationship. [This video tutorial](https://www.youtube.com/watch?v=WarVBPBPh0A) goes through
-those scenarios using the [Polkadot-JS UI](https://polkadot.js.org/apps/#/accounts).
-
-:::
-
-{{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }} makes it possible to create accounts
-having special permissions also called **proxy accounts**. For mode details about proxy accounts
-visit the [dedicated page](./learn-proxies.md) on this wiki.
+Polkadot makes it possible to create accounts having special permissions also called **proxy
+accounts**. For more details about proxy accounts visit the [dedicated page](./learn-proxies.md) on
+this wiki.
 
 Proxy accounts are special accounts which can sign
-[**extrinsic calls**](./learn-extrinsics.md/#pallets-and-extrinsics) made to specific
-[**pallets**](./learn-extrinsics.md/#pallets-and-extrinsics) on behalf of the proxied account. There
-is thus the possibility to create staking proxy accounts that can be used to sign only extrinsic
-calls to staking, session and utility pallets.
+[**extrinsic calls**](./learn-transactions.md#pallets-and-extrinsics) made to specific **pallets**
+on behalf of the proxied account. There is thus the possibility to create staking proxy accounts
+that can be used to sign extrinsic calls specific to the staking, session and utility pallets.
 
-![stash-controller](../assets/stash-controller.png)
+Staking is not a set-and-forget action, as a nominator you will need to monitor the performance of
+your validators and make changes if needed. There will be this transactions such as nominating that
+will be needed to regularly signed. Each time you sign with an account, in the case of hot accounts,
+you expose the private key of that account to the internet with consequent risk of attack. A hot
+stash will be exposed all the time a transaction is signed. Even in the case of a cold stash created
+with a Ledger device, signing with the stash will build a transaction history that might tell
+something about your habits and preferences, or even your location.
 
-Usually, with the stash-controller setup, the stash still needs to sign for actions that are
-performed less often, i.e. bonding more funds and changing the controller (see figure above). The
-controller is used to sign for those staking actions that are performed more often such as
-nominating. Remember, staking on {{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }} is
-not a set-and-forget action, as a nominator you will need to monitor the performance of your
-validators and make changes if needed. Also, each time you sign with an account, you expose the
-private key of that account to the internet with consequent risk of attack. Ideally, accounts with
-high economic power like the stash must be and remain as isolated as possible. With a staking proxy,
-the stash account is even more isolated than when using a controller. This does not necessarily mean
-that the staking proxy can sign for all staking-related transactions. Below we show two main
-configurations that affect a staking proxy's permissions.
+Ideally, accounts with high economic power like the stash must be and remain as isolated as
+possible. With a staking proxy, the stash account is fully isolated when signing for staking-related
+transactions. The proxy private key will be used to sign staking-related transactions, the stash
+private key will stay isolated and the staking transaction history will be built by the proxy.
 
-### Stash is also Controller
+![stash-stakingProxy](../assets/stash-vs-stash-and-staking-proxy.png)
 
-It is not necessary to have a controller if you have a staking proxy: the stash can also be the
-controller, and the account security will not be compromised. In this case, the staking proxy will
-be used to sign all staking-relate transactions. Note that to change the staking proxy you will need
-to sign with the stash.
-
-![stash-stakingProxy](../assets/stash-stakingProxy.png)
-
-This situation is similar to having the controller as a staking proxy. For a practical perspective
-we need to use only one account and remember one password to sign for all staking-related
-transactions. From a security perspective who controls the staking proxy controls our staking
-actions.
+For a practical perspective we need to use only one account and remember one password to sign for
+all staking-related transactions. From a security perspective who controls the staking proxy
+controls our staking actions.
 
 It is important to remember that actions that can be performed by the proxy accounts are limited,
 and in the case of staking proxy, extrinsic calls to the balances pallet cannot be signed. This
 means it is not possible to do balance transfers on the proxied account through a staking proxy.
 
-### Stash is not Controller
-
-If the stash and controller are different accounts, the staking proxy will just be used to bond more
-funds and change the controller. Thus the staking proxy will be used to sign for those transactions
-that are used less often and that are usually signed by the stash.
-
-![stash-controller-stakingProxy](../assets/stash-controller-stakingProxy.png)
-
-From a practical perspective, we now have two accounts and we need to remember two passwords. From a
-security perspective, the party who wants to fully control our staking actions must have access to
-two accounts.
+Note that to change the staking proxy you will need to sign with the stash or an _any_ proxy.
 
 ## Bags List
 
 :::info
 
 On Polkadot and Kusama, the instance of the pallet
-[Bags-List](https://paritytech.github.io/substrate/master/pallet_bags_list/) is named as 'voterList'
+[Bags-List](https://paritytech.github.io/substrate/master/pallet_bags_list/) is named as
+'voterList'.
+
+For a demo about bags list see [this video tutorial](https://youtu.be/hIIZRJLrBZA).
 
 :::
 
-In {{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }}'s NPoS nomination intents are
-placed in a semi-sorted list called [bags-list](https://github.com/paritytech/substrate/pull/9507).
-{{ kusama: The bags list example below uses DOT for explaining the concepts. :kusama }} The
-Bags-List substrate pallet is designed to be self-maintaining, with minimal effort from the
-blockchain, making it extremely scalable. The bags list has two primary components, bags and nodes
-(or nominators' accounts), with bags containing the nodes with bonded balance within a specific
-range. In the figure below the 1st empty bag will contain nominators whose bonded balance is in the
-range of 21 - 30 DOT, the 2nd bag 11 - 20 DOT, and the 3rd bag 0-10 DOT. The nomination intents are
-the nominators' accounts with bonded tokens (in the example shown below, there are eight nomination
-intents) that will be put inside each of those three bags depending on their stake.
+In Polkadot's NPoS nomination intents are placed in a semi-sorted list called
+[bags-list](https://github.com/paritytech/substrate/pull/9507). The Bags-List substrate pallet is
+designed to be self-maintaining, with minimal effort from the blockchain, making it extremely
+scalable. The bags list has two primary components, bags and nodes (or nominators' accounts), with
+bags containing the nodes with bonded balance within a specific range. In the figure below the 1st
+empty bag will contain nominators whose bonded balance is in the range of 21 - 30 DOT, the 2nd bag
+11 - 20 DOT, and the 3rd bag 0-10 DOT. The nomination intents are the nominators' accounts with
+bonded tokens (in the example shown below, there are eight nomination intents) that will be put
+inside each of those three bags depending on their stake.
 
 ![bags list example 0](../assets/bags-list-example-0.png)
 
@@ -150,13 +131,8 @@ rewards/slashing do not. See the [bags-list](learn-nominator.md#bags-list) secti
 information.
 
 The bags-list is capable of including an unlimited number of nodes, subject to the chain's runtime
-storage. In the current staking system configuration, the bags list keeps
-{{ polkadot: <RPC network="polkadot" path="query.staking.maxNominatorsCount" defaultValue={50000}/> :polkadot }}
-{{ kusama: <RPC network="kusama" path="query.staking.maxNominatorsCount" defaultValue={20000}/> :kusama }}
-nomination intents, of which, at most
-{{ polkadot: <RPC network="polkadot" path="query.electionProviderMultiPhase.maxElectingVoters" defaultValue={22500}/> :polkadot }}
-{{ kusama: <RPC network="kusama" path="query.electionProviderMultiPhase.maxElectingVoters" defaultValue={20000}/> :kusama }}
-come out as the electing nominators. See
+storage. In the current staking system configuration, at most 22500 nominators in the bags-list
+(12500 on Kusama) come out as the electing nominators. See
 [Staking Election Stages](learn-nominator.md#staking-election-stages) section for more info.
 
 This means that only a portion of the nomination intents is kept. Once the nomination period ends,
@@ -174,16 +150,14 @@ functionality of nomination intents using bags is extremely important for the
 [long-term improvements](https://gist.github.com/kianenigma/aa835946455b9a3f167821b9d05ba376) of the
 staking/election system.
 
-![bags list example 2](../assets/bags-list-example-3.png)
+![bags list example 3](../assets/bags-list-example-3.png)
 
 :::caution Minimum active nomination threshold to earn rewards is dynamic
 
-Submitting a nomination intent does not guarantee staking rewards. The stake of the top
-{{ polkadot: <RPC network="polkadot" path="query.electionProviderMultiPhase.maxElectingVoters" defaultValue={22500}/> :polkadot }}
-{{ kusama: <RPC network="kusama" path="query.electionProviderMultiPhase.maxElectingVoters" defaultValue={20000}/>  :kusama }}
-nominators is applied to the validators in the active set. To avail of staking rewards, ensure that
-the number of tokens bonded is higher than the minimum active bond. For more information, see the
-[nominator guide](learn-nominator.md).
+Submitting a nomination intent does not guarantee staking rewards. The stake of the top 22500
+nominators (12500 on Kusama) is applied to the validators in the active set. To avail of staking
+rewards, ensure that the number of tokens bonded is higher than the minimum active bond. For more
+information, see the [nominator guide](learn-nominator.md).
 
 :::
 
@@ -203,7 +177,8 @@ The general rule for rewards across validators is that two validators get paid e
 amount of tokens for equal work, i.e. they are not paid proportional to their total stakes. There is
 a probabilistic component to staking rewards in the form of
 [era points](../maintain/maintain-guides-validator-payout.md##era-points) and
-[tips](learn-transaction-fees.md#fee-calculation) but these should average out over time.
+[tips](./learn-guides-transfers.md#calculating-fees-with-polkadot-js) but these should average out
+over time.
 
 :::
 
@@ -274,29 +249,12 @@ it by changing some parameters (e.g. how many days you would like to stake with 
 fees, compound rewards, etc.) to have a better estimate. Even though it may not be entirely accurate
 since staking participation is changing dynamically, it works well as an indicator.
 
-#### Oversubscription, Commission Fees & Slashes
+#### Commission Fees & Slashes
 
-There is an additional factor to consider in terms of rewards. While there is no limit to the number
-of nominators a validator may have, a validator does have a limit to how many nominators to which it
-can pay rewards. In {{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }} this limit is
-currently
-{{ polkadot: <RPC network="polkadot" path="consts.staking.maxNominatorRewardedPerValidator" defaultValue={256}/>, :polkadot }}
-{{ kusama: <RPC network="kusama" path="consts.staking.maxNominatorRewardedPerValidator" defaultValue={256}/>, :kusama }}
-although this can be modified via runtime upgrade. A validator with more than
-{{ polkadot: <RPC network="polkadot" path="consts.staking.maxNominatorRewardedPerValidator" defaultValue={256}/> :polkadot }}
-{{ kusama: <RPC network="kusama" path="consts.staking.maxNominatorRewardedPerValidator" defaultValue={256}/> :kusama }}
-nominators is _oversubscribed_. When payouts occur, only the top
-{{ polkadot: <RPC network="polkadot" path="consts.staking.maxNominatorRewardedPerValidator" defaultValue={256}/> :polkadot }}
-{{ kusama: <RPC network="kusama" path="consts.staking.maxNominatorRewardedPerValidator" defaultValue={256}/> :kusama }}
-nominators as measured by the amount of stake allocated to that validator will receive rewards. All
-other nominators are essentially "wasting" their stake - they used their nomination to elect that
-validator to the active stake, but receive no rewards in exchange for doing so.
-
-Note that the network slashes a validator for a misbehavior (e.g. validator offline, equivocation,
-etc.) the slashed amount is a fixed percentage (and not a fixed amount), which means that validators
-with more stake get slashed more DOT. Again, this is done to provide nominators with an economic
-incentive to shift their preferences and back less popular validators whom they consider to be
-trustworthy.
+The network [slashes](./learn-offenses.md) a validator for a misbehavior. The slashed amount is a
+fixed percentage (and not a fixed amount), which means that validators with more stake get slashed
+more DOT. Again, this is done to provide nominators with an economic incentive to shift their
+preferences and back less popular validators whom they consider to be trustworthy.
 
 Also, note that each validator candidate is free to name their desired commission fee (as a
 percentage of rewards) to cover operational costs. Since validators are paid the same, validators
@@ -306,124 +264,11 @@ more nominators and increase their chances of being elected. In the long term, w
 validators will need to be cost-efficient to remain competitive, and that validators with higher
 reputation will be able to charge slightly higher commission fees (which is fair).
 
-## Slashing
-
-### Unresponsiveness
-
-For every session, validators will send an "I'm online" heartbeat to indicate they are live. If a
-validator produces no blocks during an epoch and fails to send the heartbeat, it will be reported as
-unresponsive. Slashing may occur depending on the repeated offenses and how many other validators
-were unresponsive or offline during the epoch.
-
-Validators should have a well-architected network infrastructure to ensure the node runs to reduce
-the risk of slashing or chilling. A high availability setup is desirable, preferably with backup
-nodes that kick in **only once the original node is verifiably offline** (to avoid double-signing
-and being slashed for equivocation - see below). A comprehensive guide on validator setup is
-available [here](../maintain/maintain-guides-secure-validator.md).
-
-Here is the formula for calculating slashing due to unresponsiveness:
-
-    Let x = offenders, n = total no. validators in the active set
-
-    min((3 * (x - (n / 10 + 1))) / n, 1) * 0.07
-
-The examples demonstrate how to calculate the slashing penalty for unresponsiveness.
-
-:::note
-
-In all of the examples, assume that there are 100 validators in the active set.
-
-:::
-
-No slashing would enact if < 10% of all validators are unresponsive.
-
-For example, if exactly 10 validators were unresponsive, the expression 3 _ (x - (n / 10 + 1))) / n
-would be 3 _ (10 - (100 / 10 + 1)) / 100 = 3 \* (10 - (10 + 1)) / 100 = -0.03 which is rounded to 0.
-
-:::note
-
-The minimum value between 0 and 1 is 0. 0 multiplied by 0.07 is 0.
-
-:::
-
-If 14 validators are unresponsive, then slashing would occur, as > 10% of validators are
-unresponsive.
-
-The slashing penalty would be min((3 _ (14 - (100 / 10 + 1))) / 100, 1) _ 0.07 = min((3 _ (14 -
-11))/100, 1) _ 0.07 = min(0.09, 1) \* 0.07 = 0.6%
-
-Similarly, if one-third of the validator set (around 33/100) are unresponsive, the slashing penalty
-would be about 5%.
-
-The maximum slashing that can occur due to unresponsiveness is 7%. After around 45% of the
-validators go offline, the expression 3 _ (x - (n / 10 + 1))) / n will go beyond 1. Hence, min((3 _
-(x - (n / 10 + 1))) / n, 1) \* 0.07 will be ceiled to 7%.
-
-### Equivocation
-
-**GRANDPA Equivocation**: A validator signs two or more votes in the same round on different chains.
-
-**BABE Equivocation**: A validator produces two or more blocks on the Relay Chain in the same time
-slot.
-
-Both GRANDPA and BABE equivocation use the same formula for calculating the slashing penalty:
-
-    Let x = offenders, n = total no. validators in the active set
-
-    min( (3 * x / n )^2, 1)
-
-As an example, assume that there are 100 validators in the active set, and one of them equivocates
-in a slot (for our purposes, it does not matter whether it was a BABE or GRANDPA equivocation). This
-is unlikely to be an attack on the network, but much more likely to be a misconfiguration of a
-validator. The penalty would be min(3 \* 1 / 100)^2, 1) = 0.0009, or a 0.09% slash for that
-validator (i.e., the stake held by the validator and its nominators).
-
-Now assume that there is a group running several validators, and all of them have an issue in the
-same slot. The penalty would be min((3 \* 5 / 100)^2, 1) = 0.0225, or a 2.25% slash. If 20
-validators equivocate, this is a much more serious offense and possibly indicates a coordinated
-attack on the network, and so the slash will be much greater - min((3 \* 20 / 100)^2, 1) = 0.36, or
-a 36% slash on all of these validators and their nominators. All slashed validators will also be
-chilled.
-
-From the example above, the risk of nominating or running many validators in the active set are
-apparent. While rewards grow linearly (two validators will get you approximately twice as many
-staking rewards as one), slashing grows exponentially. A single validator equivocating causes a
-0.09% slash, two validators equivocating does not cause a 0.09 \* 2 = 0.18% slash, but rather a
-0.36% slash - 4x as much as the single validator.
-
-Validators may run their nodes on multiple machines to make sure they can still perform validation
-work in case one of their nodes goes down, but validator operators should be extremely careful in
-setting these up. If they do not have good coordination to manage signing machines, equivocation is
-possible, and equivocation offenses are slashed at much higher rates than equivalent offline
-offenses.
-
-If a validator is reported for any one of the offenses they will be removed from the validator set
-([chilled](#chilling)) and they will not be paid while they are out. They will be considered
-inactive immediately and will lose their nominators. They need to re-issue intent to validate and
-again gather support from nominators.
-
-### Slashing Across Eras
-
-There are 3 main difficulties to account for with slashing in NPoS:
-
-- A nominator can nominate multiple validators and be slashed via any of them.
-- Until slashed, the stake is reused from era to era. Nominating with N coins for E eras in a row
-  does not mean you have N\*E coins to be slashed - you've only ever had N.
-- Slashable offenses can be found after the fact and out of order.
-
-To balance this, we only slash for the maximum slash a participant can receive in some time period,
-rather than the sum. This ensures protection from overslashing. Likewise, the period over which
-maximum slashes are computed is finite and the validator is chilled with nominations withdrawn after
-a slashing event, as stated in the previous section. This prevents rage-quit attacks in which, once
-caught misbehaving, a participant deliberately misbehaves more because their slashing amount is
-already maxed out.
-
 ## Simple Payouts
 
-{{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }} makes stakers claim their rewards for
-past eras by submitting a transaction. This naturally leads to spreading out reward distribution, as
-people make transactions at disparate times, rather than updating the accounts of all stakers in a
-single block.
+Polkadot makes stakers claim their rewards for past eras by submitting a transaction. This naturally
+leads to spreading out reward distribution, as people make transactions at disparate times, rather
+than updating the accounts of all stakers in a single block.
 
 Even if everyone submitted a reward claim at the same time, the fact that they are individual
 transactions would allow the block construction algorithm to process only a limited number per block
@@ -431,19 +276,17 @@ and ensure that the network maintains a constant block time. If all rewards were
 block, this could cause serious issues with the stability of the network.
 
 Simple payouts require one transaction per validator, per [era](../general/glossary.md##era), to
-claim rewards. The reason {{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }} requires
-this is to avoid an attack where someone has several thousand accounts nominating a single
-validator. The major cost in reward distribution is mutating the accounts in storage, and
-{{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }} cannot pay out several thousand
-accounts in a single transaction.
+claim rewards. The reason Polkadot requires this is to avoid an attack where someone has several
+thousand accounts nominating a single validator. The major cost in reward distribution is mutating
+the accounts in storage, and Polkadot cannot pay out several thousand accounts in a single
+transaction.
 
 ### Claiming Rewards
 
-{{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }} stores the last 84 eras of reward
-information (e.g. maps of era number to validator points, staking rewards, nomination exposure,
-etc.). Rewards will not be claimable more than 84 eras after they were earned. This means that all
-rewards must be claimed within a maximum of 84 eras, although under certain circumstances (described
-below) this may be as low as 28 eras.
+The relay chain stores the last 84 eras of reward information (e.g. maps of era number to validator
+points, staking rewards, nomination exposure, etc.). Rewards will not be claimable more than 84 eras
+after they were earned. This means that all rewards must be claimed within a maximum of 84 eras,
+although under certain circumstances (described below) this may be as low as 28 eras.
 
 If a validator kills their stash, any remaining rewards will no longer be claimable. Before doing
 this, however, they would need to first stop validating and then unbond the funds in their stash,
@@ -451,48 +294,14 @@ which takes 28 eras. If a validator were to immediately chill and start unbondin
 calculated, and nobody issued a payout for that era from that validator in the next 28 eras, the
 reward would no longer be claimable.
 
-:::info
+:::info Advanced How-to Guides
 
 In order to be absolutely sure that staking rewards can be claimed, users should trigger a payout
-before 28 eras have passed.
+before 28 eras have passed. See
+[this page](./learn-guides-nominator.md#claiming-rewards-with-the-polkadot-js-ui) for more
+information about how to claim rewards using the Polkadot-JS UI.
 
 :::
-
-Anyone can trigger a payout for any validator, as long as they are willing to pay the transaction
-fee. Someone must submit a transaction with a validator ID and an era index.
-{{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }} will automatically calculate that
-validator's reward, find the top
-{{ polkadot: <RPC network="polkadot" path="query.staking.maxNominatorRewardedPerValidator" defaultValue={256}/> :polkadot }}
-{{ kusama: <RPC network="kusama" path="query.staking.maxNominatorRewardedPerValidator" defaultValue={256}/> :kusama }}
-nominators for that era, and distribute the rewards pro rata.
-
-:::note
-
-The Staking system only applies the highest
-{{ polkadot: <RPC network="polkadot" path="query.staking.maxNominatorRewardedPerValidator" defaultValue={256}/> :polkadot }}
-{{ kusama: <RPC network="kusama" path="query.staking.maxNominatorRewardedPerValidator" defaultValue={256}/> :kusama }}
-nominations to each validator to reduce the complexity of the staking set.
-
-:::
-
-These details are handled for you automatically if you use the
-[Polkadot-JS UI](https://polkadot.js.org/apps/#/staking/payout), which also allows you to submit
-batches of eras at once.
-
-To claim rewards on Polkadot-JS UI, you will need to be in the "Payouts" tab underneath "Staking",
-which will list all the pending payouts for your stashes.
-
-![pending-payouts](../assets/polkadotjs_payout_page.png)
-
-To then claim your reward, select the "Payout all" button. This will prompt you to select your stash
-accounts for payout.
-
-![select-payouts](../assets/polkadotjs_payout_popup.png)
-
-Once you are done with payout, another screen will appear asking for you to sign and submit the
-transaction.
-
-![transaction-payouts](../assets/polkadotjs_payout_complete.png)
 
 ### FAQ and Cautionary Notes
 
@@ -511,88 +320,134 @@ transaction.
 4. Staking operations at the end of an era are closed to allow the off-chain validator election to
    take place. See [Off-chain Phragmén](learn-phragmen.md#off-chain-phragmen) for more information.
 
-## Inflation
+## Staking Miner
 
-{{ polkadot: DOT :polkadot }}{{ kusama: KSM :kusama }} is an inflationary token. In fact, there is
-no maximum number of {{ polkadot: DOT :polkadot }}{{ kusama: KSM :kusama }}. On
-{{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }} network, inflation is
-{{ polkadot: [set to be 10% annually](https://github.com/paritytech/polkadot/blob/756ccc35e93d1a78e3c71a0e67ae4da5f1d09f69/runtime/polkadot/src/lib.rs#L576), :polkadot }}
-{{ kusama: [set to be 10% annually](https://github.com/paritytech/polkadot/blob/756ccc35e93d1a78e3c71a0e67ae4da5f1d09f69/runtime/kusama/src/lib.rs#L535), :kusama }}
-with validator rewards being a function of the amount staked and the remainder going to the
-treasury.
+:::caution
 
-:::info
-
-DOT went through [redenomination](../general/redenomination.md) in 2020 that saw the DOT token
-supply increase by 100 times.
-
-The current token supply on {{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }} is
-{{ polkadot: <RPC network="polkadot" path="query.balances.totalIssuance" defaultValue={12230666300429914781} filter="humanReadable"/> (Over 1.2 Billion DOT). :polkadot }}
-{{ kusama: <RPC network="kusama" path="query.balances.totalIssuance" defaultValue={12619256191792480093} filter="humanReadable"/> (Over 12 Million KSM). :kusama }}
+The staking-miner code is experimental and it is still in the development phase. Use is at your own
+discretion, as there is a risk of losing some funds.
 
 :::
 
-There is an _ideal staking rate_ that the network tries to maintain. The goal is to have the _system
-staking rate_ meet the _ideal staking rate_. The system staking rate would be the total amount
-staked over the total token supply, where the total amount staked is the stake of all validators and
-nominators on the network. The ideal staking rate accounts for having sufficient backing of
-{{ polkadot: DOT :polkadot }} {{ kusama: KSM :kusama }} to prevent the possible compromise of
-security while keeping the native token liquid.
-{{ polkadot: DOT :polkadot }}{{ kusama: KSM :kusama }} is inflated according to the system staking
-rate of the entire network.
+At the end of each era on Polkadot and Kusama, using [NPoS](learn-phragmen), a new set of validators
+must be elected based on the nominator preferences. This is a computationally intensive process,
+hence the usage of the term "mining" for computing the solution. The validators use
+[off-chain workers](https://docs.substrate.io/reference/how-to-guides/offchain-workers/) to compute
+the result and submit a transaction to propose the set of winners. This can also be delegated to
+stand-alone programs, whose task is to mine the optimal solution. Staking miners compete with each
+other to produce election solutions which consist of a validator set, stake distribution across that
+set, and a score indicating how optimal the solution is. Staking miners run any given staking
+algorithms (as of now, sequential Phragmén or PhragMMS, subject to change if improved algorithms are
+introduced) to produce results, which are then sent as a transaction to the relay chain via a normal
+signed extrinsic. The transaction requires a bond and a transaction fee. The best solution is
+rewarded, which the least covers the transaction fee, and the bond is returned to the account.
+[The bond and the fee](./learn-staking-advanced.md#deposit-and-reward-mechanics) are lost if the
+solution is invalid.
 
-:::info
+Staking miner uses a pallet called `pallet_election_provider_multi_phase` and can only produce
+solutions during the
+[`SignedPhase`](https://crates.parity.io/pallet_election_provider_multi_phase/index.html#signed-phase)
+of the pallet's life cycle. Once the `SignedPhase` is over and the
+[`UnsignedPhase`](https://crates.parity.io/pallet_election_provider_multi_phase/index.html#unsigned-phase)
+starts, only the off-chain workers can provide election results.
 
-According to the inflation model, this would suggest that if you do not use your
-{{ polkadot: DOT :polkadot }}{{ kusama: KSM :kusama }} for staking, your tokens dilute over time.
+Running the staking miner requires passing the seed of a funded account in order to pay the fees for
+the transactions that will be sent. The same account's balance is used to reserve deposits as well.
+The best solution in each round is rewarded. All correct solutions will get their deposit back and
+the ones that submit invalid solutions will lose their deposit.
 
-:::
+### NPoS election optimization
 
-The ideal staking rate on {{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }} also varies
-with the number of parachains (50% is the current estimation of all
-{{ polkadot: DOT :polkadot }}{{ kusama: KSM :kusama }} that should be staked, per parachain slot).
+![NPoS election optimization](../assets/staking-miner/NPoS-election-optimization.png)
 
-:::info The ideal staking rate varies based on the number of parachains
+A basic election solution is a simple distribution of stake across validators, but this can be
+optimized for better distribution equaling a higher security score. The staking miner does not act
+as a validator and focuses solely on the election result and optimization of the solution. It
+connects to a specified chain and keeps listening to new signed phase of the election pallet in
+order to submit solutions to the NPoS election. When the correct time comes, it computes its
+solution and submits it to the chain. The default miner algorithm is sequential Phragmén with a
+configurable number of balancing iterations that improve the score.
 
-The current staking rate on
-{{ polkadot: Polkadot still assumes the absence of parachains, with the suggested ideal staking rate of 75%. :polkadot }}
-{{ polkadot: You can track the progress on the issue to adjust it [here](https://github.com/paritytech/polkadot/pull/5872). :polkadot }}
-{{ kusama: Kusama has an ideal staking rate of approximately 50% with 50 parachains. :kusama }}
-{{ kusama: When the number of slots reaches 60, the ideal staking rate is 45%. [Here](https://github.com/paritytech/polkadot/blob/master/runtime/kusama/src/lib.rs#L535) is the code for reference. :kusama }}
-This code assumes that the number of slots auctioned correspond to the number of parachains on the
-relaychain, which may not be true as new slots can be occupied by old parachains that are renewing
-their lease. You can also track the progress on resolving this specific issue
-[here](https://github.com/paritytech/polkadot/pull/5872).
+### Signed Phase of the election pallet
 
-:::
+The election provider pallet `pallet_election_provider_multi_phase` is divided into two phases,
+**signed** and **unsigned**. At the end of the pallet's timeline, the function `elect()` is called.
 
-If the amount of tokens staked goes below the ideal rate, then staking rewards for nominators go up,
-incentivizing them to stake more tokens on the network. On the contrary, if it goes above the ideal
-rate, staking rewards drop. This is a result of the change in the percentage of staking rewards that
-go to the Treasury.
+```
+                                                                   elect()
+                +   <--T::SignedPhase-->  +  <--T::UnsignedPhase-->   +
+  +-------------------------------------------------------------------+
+   Phase::Off   +       Phase::Signed     +      Phase::Unsigned      +
+```
 
-![staking](../assets/NPoS/staking-rate-with-parachains.png)
+Solutions provided by the staking miner can only be submitted during the signed phase. Solutions are
+submitted and queued on the chain as a `RawSolution`. Once submitted, a solution cannot be retracted
+by the originating account.
 
-<p style={{textAlign:"center"}}>Source: <a href="https://w3f-research.readthedocs.io/en/latest/polkadot/overview/2-token-economics.html">Research - Web3 Foundation</a></p>
+`RawSolution` struct definition:
 
-- **x-axis**: Proportion of {{ polkadot: DOT :polkadot }}{{ kusama: KSM :kusama }} staked
-- **y-axis**: Inflation, annualized percentage
-- **Blue line**: Annual inflation rate of NPoS, i.e. total amount of tokens minted to pay validators
-  and nominators.
-- **Green line**: Annual rewards rate for stakers. For instance, 0.2 corresponds to 20% of annual
-  returns on the staked tokens.
+```
+pub struct RawSolution<S> {
+    pub solution: S, // The solution itself
+    pub score: ElectionScore, // The claimed score of the solution.
+    pub round: u32, // The round at which this solution should be submitted.
+}
+```
 
-You can determine the staking rewards by looking at the top bar of the staking overview on
-[Polkadot-JS UI](https://polkadot.js.org/apps/#/staking).
+A maximum of
+[`pallet::Config::SignedMaxSubmissions`](https://github.com/paritytech/polkadot-sdk/blob/f610ffc05876d4b98a14cee245b4cc27bd3c0c15/runtime/polkadot/src/lib.rs#L390)
+will be stored on-chain and they will be sorted based on score. Higher the score the more optimal
+the election solution is. The
+[`SignedMaxSubmissions`](../general/chain-state-values.md#staking-miner-max-submissions) variable
+can be modified through governance.
 
-The above chart shows the inflation model of the network. Depending on the staking participation,
-the distribution of the inflation to validators/nominators versus the treasury will change
-dynamically to provide incentives to participate (or not participate) in staking.
+Upon arrival of a new solution:
 
-For instance, assuming that the ideal staking rate is 50%, all of the inflation would go to the
-validators/nominators if 50% of all KSM / DOT are staked. Any deviation from the 50% - positive or
-negative - sends the proportional remainder to the treasury and effectively reduces staking rewards.
+1. If the queue is not full, it is stored in the appropriate sorted index.
+2. If the queue is full but the submitted solution is better than one of the queued ones, the worse
+   solution is discarded, the deposit of the outgoing solution is returned, and the new solution is
+   stored in the correct index.
+3. If the queue is full and the solution is not an improvement compared to any of the queued ones,
+   it is instantly rejected and no deposit is reserved.
 
-For those who are interested in knowing more about the design of the inflation model for the
-network, please see
-[here](https://w3f-research.readthedocs.io/en/latest/polkadot/overview/2-token-economics.html).
+Upon the end of the `SignedPhase`, no more solutions can be submitted and the solutions in the queue
+will be checked using
+[`Pallet::feasibility_check`](https://paritytech.github.io/substrate/master/pallet_election_provider_multi_phase/pallet/struct.Pallet.html#method.feasibility_check)
+which ensures the score is indeed correct, and marks them as valid or invalid. By checking each
+solution in the queue, the queue will be reorganized by score. The highest valid score will be
+rewarded. Invalid solutions with higher score than the winning solution will be slashed. The rest of
+the solutions will be discarded and their deposit will be returned. Once the staking miner with a
+winning solution is ready to be rewarded the runtime will automatically execute
+[`finalize_signed_phase_accept_solution`](https://github.com/paritytech/substrate/blob/f2bc08a3071a91b71fec63cf2b22c707411cec0e/frame/election-provider-multi-phase/src/signed.rs#L453-L474)
+which reward account associated with the winning solution.
+
+```
+Queue
++-------------------------------+
+|Solution(score=20, valid=false)| +-->  Slashed
++-------------------------------+
+|Solution(score=15, valid=true )| +-->  Rewarded, Saved
++-------------------------------+
+|Solution(score=10, valid=true )| +-->  Discarded
++-------------------------------+
+|Solution(score=05, valid=false)| +-->  Discarded
++-------------------------------+
+|             None              |
++-------------------------------+
+```
+
+### Deposit and reward mechanics
+
+The staking miners are required to pay a deposit to post their solutions. Deposit amount is the sum
+of `SignedDepositBase` +`SignedDepositByte` + `SignedDepositWeight`. All good solutions are subject
+to receiving a `SignedRewardBase`. For more information about deposit values see the
+[Chain State Values page](../general/chain-state-values.md#staking-miner-deposit).
+
+### Further Resources
+
+If you want to run a staking miner on your validator, refer to the repository provided in the
+resources section below.
+
+- [Staking Miner repository](https://github.com/paritytech/staking-miner-v2)
+- [Election Pallet definition](https://crates.parity.io/pallet_election_provider_multi_phase/index.html)
+- [Signed phase parameter configuration on Polkadot](https://github.com/paritytech/polkadot-sdk/blob/f610ffc05876d4b98a14cee245b4cc27bd3c0c15/runtime/polkadot/src/lib.rs#L389:L397)
