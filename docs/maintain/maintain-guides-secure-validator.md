@@ -15,15 +15,16 @@ This primarily means that validators:
 
 - Must be high availability.
 - Must have infrastructure that protects the validator's signing keys so that an attacker cannot
-  take control and commit slashable behavior.
+  take control and commit [slashable behavior](../learn/learn-offenses.md).
 
 ## High Availability
 
 High availability set-ups that involve redundant validator nodes may seem attractive at first.
 However, they can be **very dangerous** if they are not set up perfectly. The reason for this is
 that the session keys used by a validator should always be isolated to just a single node.
-Replicating session keys across multiple nodes could lead to equivocation slashes or parachain
-validity slashes which can make you lose **100% of your staked funds**.
+Replicating session keys across multiple nodes could lead to equivocation
+[slashes](../learn/learn-offenses.md) or parachain validity slashes which can make you lose **100%
+of your staked funds**.
 
 The good news is that 100% uptime of your validator is not really needed, as it has some buffer
 within eras in order to go offline for a little while and upgrade. For this reason, we advise that
@@ -32,21 +33,18 @@ doing.**
 
 Many expert validators have made mistakes in the past due to the handling of session keys.
 
-Remember, even if your validator goes offline for some time, the offline slash is much more
-forgiving than the equivocation or parachain validity slashing.
-
 ## Key Management
 
-See the [Polkadot Keys guide](../learn/learn-cryptography.md) for more information on keys. The keys that
-are of primary concern for validator infrastructure are the Session keys. These keys sign messages
-related to consensus and parachains. Although Session keys are _not_ account keys and therefore
-cannot transfer funds, an attacker could use them to commit slashable behavior.
+See the [Polkadot Keys guide](../learn/learn-cryptography.md) for more information on keys. The keys
+that are of primary concern for validator infrastructure are the Session keys. These keys sign
+messages related to consensus and parachains. Although Session keys are _not_ account keys and
+therefore cannot transfer funds, an attacker could use them to commit slashable behavior.
 
 Session keys are generated inside the node via RPC call. See the
 [How to Validate guide](maintain-guides-how-to-validate-polkadot.md#set-session-keys) for
 instructions on setting Session keys. These should be generated and kept within your client. When
 you generate new Session keys, you must submit an extrinsic (a Session certificate) from your
-Controller key telling the chain your new Session keys.
+staking proxy key telling the chain your new Session keys.
 
 :::info Generating session keys
 
@@ -68,6 +66,33 @@ Therefore, an attacker who gains access to your validator node could still commi
 behavior.
 
 :::
+
+### Secure-Validator Mode
+
+Parity Polkadot has a Secure-Validator Mode, enabling several protections for keeping keys secure.
+The protections include highly strict filesystem, networking, and process sandboxing on top of the
+existing wasmtime sandbox.
+
+This mode is **activated by default** if the machine meets the following requirements. If not, there
+is an error message with instructions on disabling Secure-Validator Mode, though this is not
+recommended due to the security risks involved.
+
+#### Requirements
+
+1. **Linux on x86-64 family** (usually Intel or AMD).
+2. **seccomp enabled**. You can check that this is the case by running the following command:
+
+```
+cat /boot/config-`uname -r` | grep CONFIG_SECCOMP=
+```
+
+The expected output, if enabled, is:
+
+```
+CONFIG_SECCOMP=y
+```
+
+3. OPTIONAL: **Linux 5.13**. Provides access to even more strict filesystem protections.
 
 ## Monitoring Tools
 
@@ -100,7 +125,6 @@ behavior.
 
 - Given that HA setups would always be at risk of double-signing and there's currently no built-in
   mechanism to prevent it, we propose having a single instance of the validator to avoid slashing.
-  Slashing penalties for being offline are much less than those for equivocation.
 
 ### Validators
 

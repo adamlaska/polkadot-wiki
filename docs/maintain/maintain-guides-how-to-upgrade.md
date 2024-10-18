@@ -7,11 +7,11 @@ keywords: [upgrade, node, validator, release, session]
 slug: ../maintain-guides-how-to-upgrade
 ---
 
-Validators perform critical functions for the network, and as such, have strict uptime requirements.
-Validators may have to go offline for short-periods of time to upgrade client software or to upgrade
-the host machine. Usually, standard client upgrades will only require you to stop the service,
-replace the binary and restart the service. This operation can be executed within a session and if
-performed correctly will not produce a slashable event.
+Validators perform critical functions for the network by
+[backing and including blocks](../learn/learn-parachains-protocol.md). Validators may have to go
+offline for short-periods of time to upgrade client software or to upgrade the host machine.
+Usually, standard client upgrades will only require you to stop the service, replace the binary and
+restart the service. This operation can be executed within a session.
 
 Validators may also need to perform long-lead maintenance tasks that will span more than one
 session. Under these circumstances, an active validator may chill their stash and be removed from
@@ -35,8 +35,8 @@ Upgrade or downgrade accordingly.
 ### Session Keys
 
 Session keys are stored in the client and used to sign validator operations. They are what link your
-validator node to your Controller account. If you change them within a session you will have to wait
-for the current session to finish and a further two sessions to elapse before they are applied.
+validator node to your staking proxy. If you change them within a session you will have to wait for
+the current session to finish and a further two sessions to elapse before they are applied.
 
 [More info about keys in Polkadot.](../learn/learn-cryptography.md)
 
@@ -45,7 +45,7 @@ for the current session to finish and a further two sessions to elapse before th
 Each validator server contains essential private keys in a folder called the _keystore_. These keys
 are used by a validator to sign transactions at the network level. If two or more validators sign
 certain transactions using the same keys, it can lead to an
-[equivocation slash](../learn/learn-staking.md/#slashing).
+[equivocation slash](../learn/learn-offenses.md).
 
 For this reason, it is advised that validators DO NOT CLONE or COPY the _keystore_ folder and
 instead generate session keys for each new validator instance.
@@ -61,7 +61,7 @@ original server that is in the active set will be referred to as `Validator A`.
 
 1. Start a second node. Once it is synced, use the `--validator` flag. This is now "Validator B."
 2. Generate Session keys for **Validator B**.
-3. Submit a `set_key` extrinsic from your Controller account with the session key generated from
+3. Submit a `set_key` extrinsic from your staking proxy with the session key generated from
    **Validator B**.
 4. Take note of the Session that this extrinsic was executed in.
 5. Allow the current session to elapse and then wait for two full sessions.
@@ -81,7 +81,7 @@ When you are ready to restore **Validator A**:
 1. Start **Validator A**, sync the database and ensure that it is operating with the `--validator`
    flag.
 2. Generate new Session keys for **Validator A**.
-3. Submit a `set_key` extrinsic from your Controller account with the session key generated from
+3. Submit a `set_key` extrinsic from your staking proxy with the session key generated from
    **Validator A**.
 4. Take note of the Session that this extrinsic was executed in.
 

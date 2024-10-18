@@ -23,10 +23,12 @@
   - [Publish](#publish)
 - [Style and Configuration Guide](#style-and-configuration-guide)
   - [Formatting](#formatting)
-  - [Static Site Generator](#static-site-generator)
   - [Search Engine](#search-engine)
-  - [Automated Deployments](#automated-deployments)
+  - [Automation](#automation)
+    - [Deployments](#deployments)
+    - [GitHub Actions](#github-actions)
   - [Conditional Rendering](#conditional-rendering)
+  - [Inline React Components](#inline-react-components)
 - [Internationalization](#internationalization)
 - [License](#license)
 <!-- /TOC -->
@@ -43,11 +45,12 @@
 
 ## Contributing to Documentation
 
-The Technical Education team at Web3 Foundation are the primary maintainers of the Wiki and will
-review all issues and pull requests created in this repository. If you notice typos or grammatical
-errors, please feel free to create pull requests with these corrections directly. Larger
-contributions may start as issues to test the waters on the subject with the maintainers. It is
-generally preferable to create a pull request over an issue to propose a change to the Wiki content.
+[The Technical Education team](https://wiki.polkadot.network/docs/contributors) at Web3 Foundation
+are the primary maintainers of the Wiki and will review all issues and pull requests created on this
+repository. If you notice typos or grammatical errors, please feel free to create pull requests with
+these corrections directly. Larger contributions may start as issues to test the waters on the
+subject with the maintainers. It is generally preferable to create a pull request over an issue to
+propose a change to the Wiki content.
 
 :sparkles: **_The Wiki belongs to the community, help generate its identity._** :sparkles:
 
@@ -67,6 +70,15 @@ Both the Polkadot Wiki and the Kusama Guide are built from the source files in t
 After cloning the source locally, you can start the websites with each of these respective commands
 (ensure you run `yarn` at the root of the repository first to install dependencies).
 
+The Wiki uses Algolia search, which can be accessed locally by providing the correct App ID and API
+key. The `app_id` and `api_key` environment variables are needed for the Wiki to be built
+successfully. If you are an external contributor, set the variables with some values like shown
+below, which lets the Wiki repo build successfully (but disables the search bar).
+
+```bash
+export app_id="xxxxxx" api_key="xxxxxxx"
+```
+
 Using yarn, run:
 
 ```bash
@@ -74,9 +86,6 @@ yarn install
 ```
 
 ### Build
-
-> The Wiki is currently in the process of being deployed onto IPFS and will follow the same
-> configuration to build the static files.
 
 :bird: Building the Kusama Guide:
 
@@ -155,52 +164,47 @@ If you would like to access and modify this, you can re-submit the documentation
 [DocSearch Program](https://docsearch.algolia.com/apply/), where they will send a JavaScript snippet
 that you can re-integrate into the configuration, similar to the one shown above.
 
-### Automated Deployments
+### Automation
+
+#### Deployments
 
 The Polkadot Wiki is built on the `gh-pages` branch and automatically deployed to GitHub Pages. The
 Kusama Wiki is also deployed to GitHub Pages (via a separate repository).
 
 Development servers exist at `https://staging.polkadot.network` and
 `https://staging.kusama.network`. The servers will reflect the latest `master` commit or PR put up
-against the master branch by a member of the Technical Education team. The latest version of
-`master` is staged and checked by the team. If all is well, the new commits on `master` are
-transferred into the production branch,`prod`, by rebasing `master` on `prod`. The CICD production
-workflow will deploy `prod` to the public sites: [Polkadot Wiki](https://wiki.polkadot.network) and
+against the master branch by a member of the Technical Education team. A staging environment can be
+generated to reflect a specific branch by invoking the `workflow_dispatch` command via the GitHub UI
+and can then be reviewed by the team before proceeding to production. If all is well, the new
+commits on `master` are transferred into the production branch,`prod`, by rebasing `master` on
+`prod`. This is completed automatically every 24 hours or manually through a `workflow_dispatch`
+command. After these jobs are completed, the CICD production workflow will automatically deploy
+`prod` to the public sites: [Polkadot Wiki](https://wiki.polkadot.network) and
 [Kusama Guide](https://guide.kusama.network), respectively.
+
+#### GitHub Actions
+
+| Job                                                                                                                       | Description                                                                                                                                                                                                       | Frequency                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| [Audit Images](https://github.com/w3f/polkadot-wiki/blob/master/.github/workflows/audit-images.yml)                       | Searches for unreferenced images in the docs repository and archives them into `/docs/assets/_legacy`.                                                                                                            | Monthly or [Workflow Dispatch](https://github.com/w3f/polkadot-wiki/actions/workflows/audit-images.yml)         |
+| [Audit Links](https://github.com/w3f/polkadot-wiki/blob/master/.github/workflows/audit-links.yml)                         | Test all links in the docs for broken references and opens a new issue displaying results if any are found.                                                                                                       | Monthly or [Workflow Dispatch](https://github.com/w3f/polkadot-wiki/actions/workflows/audit-links.yml)          |
+| [Code QL Analysis](https://github.com/w3f/polkadot-wiki/blob/master/.github/workflows/codeql-analysis.yml)                | Tests for vulnerabilities across the codebase                                                                                                                                                                     | Weekly, Push to `master` or Pull Request to `master`                                                            |
+| [Dependabot]()                                                                                                            | Helps keep packages up-to-date with latest release.                                                                                                                                                               | Daily                                                                                                           |
+| [Deploy Kusama Prod](https://github.com/w3f/polkadot-wiki/blob/master/.github/workflows/deploy-kusama-prod.yml)           | Deploy Kusama docs to [GitHub Pages](https://w3f.github.io/kusama-guide-hosting) (production).                                                                                                                    | Daily or [Workflow Dispatch](https://github.com/w3f/polkadot-wiki/actions/workflows/deploy-kusama-prod.yml)     |
+| [Deploy Kusama Staging](https://github.com/w3f/polkadot-wiki/blob/master/.github/workflows/deploy-kusama-staging.yml)     | Deploy Kusama docs to [staging environment](https://staging.kusama.network).                                                                                                                                      | [Workflow Dispatch](https://github.com/w3f/polkadot-wiki/actions/workflows/deploy-kusama-staging.yml)           |
+| [Deploy Polkadot Prod](https://github.com/w3f/polkadot-wiki/blob/master/.github/workflows/deploy-polkadot-prod.yml)       | Deploy Polkadot docs to [GitHub Pages](https://w3f.github.io/polkadot-wiki) (production).                                                                                                                         | Daily or [Workflow Dispatch](https://github.com/w3f/polkadot-wiki/actions/workflows/deploy-polkadot-prod.yml)   |
+| [Deploy Polkadot Staging](https://github.com/w3f/polkadot-wiki/blob/master/.github/workflows/deploy-polkadot-staging.yml) | Deploy Polkadot docs to [staging environment](https://staging.polkadot.network).                                                                                                                                  | [Workflow Dispatch](https://github.com/w3f/polkadot-wiki/actions/workflows/deploy-polkadot-staging.yml)         |
+| [Generate PDF](https://github.com/w3f/polkadot-wiki/blob/master/.github/workflows/generate-pdf.yml)                       | Generate a PDF for the docs and upload it to the static website.                                                                                                                                                  | Disabled Manually                                                                                               |
+| [Greetings](https://github.com/w3f/polkadot-wiki/blob/master/.github/workflows/greetings.yml)                             | Greet first time contributors.                                                                                                                                                                                    | First Time Pull Request or Issue Creation                                                                       |
+| [Jest Testing Coverage](https://github.com/w3f/polkadot-wiki/blob/master/.github/workflows/jest-testing-coverage.yml)     | Run a series of [Jest tests](https://github.com/w3f/polkadot-wiki/tree/master/tests) related to React functionality.                                                                                              | Weekly or [Workflow Dispatch](https://github.com/w3f/polkadot-wiki/actions/workflows/jest-testing-coverage.yml) |
+| [Pages and Build Deployment](https://github.com/w3f/polkadot-wiki/actions/workflows/pages/pages-build-deployment)         | Deploy Polkadot docs prod branch from GH Pages to public site. (This was originally setup through the [GitHub settings menu](https://github.com/w3f/polkadot-wiki/settings/pages), prior to GitHub Actions flows) | On Push to `gh-pages` branch                                                                                    |
+| [Prettier All](https://github.com/w3f/polkadot-wiki/blob/master/.github/workflows/prettier-all.yml)                       | Run prettier over all docs to maintain styling standards.                                                                                                                                                         | Weekly or [Workflow Dispatch](https://github.com/w3f/polkadot-wiki/actions/workflows/prettier-all.yml)          |
+| [Status Badges](https://github.com/w3f/polkadot-wiki/blob/master/.github/workflows/status-badges.yml)                     | Update the commit history of various [open source projects](https://github.com/w3f/polkadot-wiki/blob/master/docs/build/build-open-source.md) in the ecosystem.                                                   | Weekly or [Workflow Dispatch](https://github.com/w3f/polkadot-wiki/actions/workflows/status-badges.yml)         |
 
 ### Conditional Rendering
 
-The two Wikis support conditional rendering depending on which Wiki is being deployed. This is
-useful for mirrored pages with most content in common but have minor differences. To use this
-functionality, surround Kusama specific content with
-`{{ kusama: KUSAMA_SPECIFIC_CONTENT :kusama }}`, and polkadot specific content with
-`{{ polkadot: POLKADOT_SPECIFIC_CONTENT :polkadot }}`.
-
-For example the syntax:
-
-```markdown
-The {{ polkadot: Polkdadot Wiki :polkadot }} {{ kusama: Kusama Guide :kusama }} is a great resource!
-```
-
-Will render:
-
-```
-The Polkdadot Wiki is a great resource!
-```
-
-or
-
-```
-The Kusama Guide is a great resource!
-```
-
-depending on which project is currently loaded.
-
-To verify the appropriate values have been substituted in each scenario, run `polkadot:start` and
-`kusama:start` in separate terminals. If prompted with
-`[WARNING] Something is already running on port 3000. Would you like to run the app on another port instead?`,
-proceed with `yes`. This will likely launch one project on port 3000 and the other on 3001, allowing
-you to compare the rendered outputs for both projects locally and simultaneously.
+The Polkadot Wiki does not support conditional rendering. If needed, use `Tabs` and `TabItem` to
+display values for Polkadot and Kusama.
 
 ### Inline React Components
 
@@ -218,30 +222,7 @@ A full list of sample components can be found
 
 Try and reuse existing components as much as possible instead of creating new ones to keep the code
 lean and comprehensive. It is also important to verify prettier has not modified the formatting of
-your component after making a commit. Below are some best practices for achieving common formatting
-that will not be modified by the prettier command:
-
-Always wrap RPC components in conditional rendering & keep them on new lines:
-
-```
-{{ polkadot: <RPC network="polkadot" path="query.staking.validatorCount" defaultValue={297}/> :polkadot }}
-{{ kusama: <RPC network="kusama" path="query.staking.validatorCount" defaultValue={297}/> :kusama }}
-```
-
-To add grammar without added spacing, place the grammar inside the conditional brackets:
-
-```
-The validator count followed by a period is
-{{ polkadot: <RPC network="polkadot" path="query.staking.validatorCount" defaultValue={297}/>. :polkadot }}
-{{ kusama: <RPC network="kusama" path="query.staking.validatorCount" defaultValue={297}/>. :kusama }}
-
-The validator count in parentheses is
-{{ polkadot: (<RPC network="polkadot" path="query.staking.validatorCount" defaultValue={297}/>) :polkadot }}
-{{ kusama: (<RPC network="kusama" path="query.staking.validatorCount" defaultValue={297}/>) :kusama }}
-```
-
-Failing to follow this schema can results in unexpected formatting, such as added line-breaks or
-spacing, especially after running prettier.
+your component after making a commit.
 
 ## Internationalization
 

@@ -7,6 +7,8 @@ keywords: [endpoints, network, connect]
 slug: ../maintain-endpoints
 ---
 
+import Tabs from "@theme/Tabs"; import TabItem from "@theme/TabItem";
+
 Ideally, one may run their own node when interacting with the
 [Polkadot network](https://polkadot.network/) via [Polkadot-JS Apps](https://polkadot.js.org/apps/)
 or other UIs and programmatic methods. Another option would be to connect to one of the several
@@ -18,48 +20,68 @@ tables below list these endpoints.
 
 ### Network Endpoints
 
-#### Main Networks
+Endpoints for all production and test networks are listed on the
+[Polkadot-JS UI](https://polkadot.js.org/apps/#/accounts) which are accessed from
+[here](https://github.com/polkadot-js/apps/tree/master/packages/apps-config/src/endpoints).
+Endpoints for Polkadot relay chain and Kusama relay chain, parachains, and Paseo test network are
+maintained by the community. System Chains as well as Westend test network endpoints maintained by
+Parity Technologies are listed below:
 
-| Network  | URL                          |
-| -------- | ---------------------------- |
-| Polkadot | wss://rpc.polkadot.io        |
-| Kusama   | wss://kusama-rpc.polkadot.io |
+<!-- prettier-ignore -->
+<Tabs groupId="endpoints" values={[ 
+  { label: 'Polkadot System Chains', value: 'psc' }, 
+  { label: 'Kusama System Chains', value: 'ksc' }, 
+  { label: 'Test Networks', value: 'tn' } 
+]}>
 
-#### Test Networks
+  <TabItem value="psc">
 
-| Network | URL                           |
+| Network      | WSS Endpoint                               |
+| ------------ | ------------------------------------------ |
+| Asset Hub    | wss://polkadot-asset-hub-rpc.polkadot.io   |
+| Bridge Hub   | wss://polkadot-bridge-hub-rpc.polkadot.io  |
+| Collectives  | wss://polkadot-collectives-rpc.polkadot.io |
+| People Chain | wss://polkadot-people-rpc.polkadot.io      |
+
+  </TabItem>
+
+  <TabItem value="ksc">
+
+| Network        | WSS Endpoint                             |
+| -------------- | ---------------------------------------- |
+| Asset Hub      | wss://kusama-asset-hub-rpc.polkadot.io   |
+| Bridge Hub     | wss://kusama-bridge-hub-rpc.polkadot.io  |
+| Collectives    | wss://kusama-collectives-rpc.polkadot.io |
+| People Chain   | wss://kusama-people-rpc.polkadot.io      |
+| Coretime Chain | wss://kusama-coretime-rpc.polkadot.io    |
+
+  </TabItem>
+
+  <TabItem value="tn">
+
+| Network | WSS Endpoint                  |
 | ------- | ----------------------------- |
 | Westend | wss://westend-rpc.polkadot.io |
-| Rococo  | wss://rococo-rpc.polkadot.io  |
+
+  </TabItem>
+
+</Tabs>
 
 #### Example usage with Polkadot-JS API
 
-To connect to the Parity node, use the endpoint in your JavaScript apps like so:
+To connect to the Parity node for the Polkadot Asset Hub, use the endpoint in your JavaScript apps
+like so:
 
 ```javascript {5}
 // Using the Polkadot Mainnet Endpoint
 const { ApiPromise, WsProvider } = require('@polkadot/api');
 async () => {
   // Construct a provider with the endpoint URL
-  const provider = new WsProvider('wss://rpc.polkadot.io/');
+  const provider = new WsProvider('wss://polkadot-asset-hub-rpc.polkadot.io');
   // Create an API instance for Polkadot
   const api = await ApiPromise.create({ provider });
   // ...
 ```
-
-#### Substrate Connect
-
-[Substrate connect](https://substrate.io/developers/substrate-connect/) builds on Polkadot JS so
-building an app is the same experience as with using a traditional RPC server node. It is a fast,
-secure, and decentralized way to interact with Polkadot, Kusama, and their parachains right in the
-browser.
-
-:::info
-
-Substrate Connect is still under
-[active development](https://github.com/paritytech/substrate-connect).
-
-:::
 
 ### Third Party Providers
 
@@ -70,12 +92,17 @@ service, and additional metrics.
 
 - [OnFinality](https://onfinality.io)
 - [Dwellir](https://dwellir.com)
-- [Pinknode](https://pinknode.io)
 - [Radium Block](https://radiumblock.com/)
+- [GetBlock](https://getblock.io/)
+- [1RPC](https://1rpc.io/)
+- [NOWNodes](https://nownodes.io/)
+- [All That Node](https://www.allthatnode.com/)
+- [SubQuery](https://www.rpc.subquery.network/)
+- [dRPC](https://drpc.org/)
 
 :::note
 
 The list of third party RPC endpoints above for Polkadot and Kusama is directly fetched from
-[Polkdot-JS UI](https://polkadot.js.org/apps/#/explorer)
+[Polkadot-JS UI](https://polkadot.js.org/apps/#/explorer)
 
 :::

@@ -1,20 +1,22 @@
 ---
 id: ambassadors
-title: Polkadot Ambassador Programme
-sidebar_label: Polkadot Ambassador Programme
-description: Simple user guide on Polkadot's Ambassador Programme and how to participate.
+title: Polkadot Ambassador Program
+sidebar_label: Polkadot Ambassadors
+description: The Polkadot's Ambassador Program and How you can Participate in It.
 keywords: [ambassadors, contribute, contributions, program]
 slug: ../ambassadors
 ---
 
-The Polkadot Ambassador Programme is an initiative ran by Web3 Foundation to support potential
-contributors to the Polkadot community and ecosystem.
+:::info Polkadot Ambassador On-chain Collective
 
-## How it works
+Polkadot Ambassador Program is transitioning into an on-chain, rank-based, system collective after
+the approval of [Polkadot OpenGov referenda 487](https://polkadot.polkassembly.io/referenda/487).
 
-If you are enthusiastic about Polkadot and Web3 and are willing to help the community grow, you can
-join the program and receive funding for hosting events, gain access to communication channels of
-core team members, and gain access to Polkadot events.
+:::
+
+If you are enthusiastic about [Polkadot and Web3](./web3-and-polkadot.md) and are willing to help
+the community grow, you can join the program and receive funding for hosting events, gain access to
+communication channels of core team members, and gain access to Polkadot events.
 
 There are many ways you can get involved in expanding Polkadot’s ecosystem, such as:
 
@@ -25,11 +27,3 @@ There are many ways you can get involved in expanding Polkadot’s ecosystem, su
 - Mentoring and onboarding newcomers
 - Identifying partnerships and opportunities for the Polkadot ecosystem
 - Participating in calls and tasks that help drive the ecosystem forward
-
-## How to apply:
-
-To become a Polkadot Ambassador, please fill out your application
-[here](https://info.polkadot.network/ambassador-application).
-
-Find out more about the programme and how to join
-[here](https://polkadot.network/polkadot-ambassador-program/?utm_source=twitter&utm_medium=social&utm_campaign=Ambassador%20program).

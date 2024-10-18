@@ -2,6 +2,8 @@ const Polkadot = "polkadot";
 const Kusama = "kusama";
 const Statemine = "statemine";
 const Statemint = "statemint";
+const PolkadotPeople = "polkadotpeople";
+const KusamaPeople = "kusamapeople";
 
 const values = {
   polkadot: {
@@ -20,6 +22,14 @@ const values = {
     precision: 1e12,
     symbol: "KSM",
   },
+  polkadotpeople: {
+    precision: 1e10,
+    symbol: "DOT",
+  },
+  kusamapeople: {
+    precision: 1e12,
+    symbol: "KSM",
+  },
 };
 
 module.exports = {
@@ -28,8 +38,10 @@ module.exports = {
     let decimals = undefined;
     if (network === Polkadot || network === Statemint) {
       decimals = 3;
-    } else if (network === Kusama || network === Statemine) {
+    } else if (network === Kusama || network === Statemine || network === PolkadotPeople) {
       decimals = 6;
+    } else if (network == KusamaPeople) {
+      decimals = 8;
     } else {
       console.log("Unknown network type found when attempting to apply 'Human Readable' filter");
       return;
@@ -59,5 +71,40 @@ module.exports = {
     value = (value * 6) / 86400;
     // Update value
     setReturnValue(value.toString());
+  },
+
+  ErasToDays: function (value, setReturnValue, network) {
+    let factor = undefined;
+    if (network === Polkadot || network === Statemint || network == PolkadotPeople) {
+      factor = 1;
+    } else if (network === Kusama || network === Statemine || network == KusamaPeople) {
+      factor = 4;
+    } else {
+      console.log("Unknown network type found when attempting to apply 'Human Readable' filter");
+      return;
+    }
+    
+    value = value/factor;
+    // Update value
+    setReturnValue(value.toString());
+  },
+
+  Percentage: function (value, setReturnValue) {
+    value = (value) / 10000000;
+    // Update value
+    setReturnValue(value.toString());
+  },
+
+  PermillToPercent: function (value, setReturnValue) {
+    value = (value) / 10000;
+    // Update value
+    setReturnValue(value.toString());
+  },
+
+  ArrayLength: function (value, setReturnValue) {
+    value = value.split(',').length;
+    // Update value
+    setReturnValue(value.toString());
   }
+
 }

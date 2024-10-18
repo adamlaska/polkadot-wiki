@@ -2,7 +2,7 @@
 id: glossary
 title: Glossary
 sidebar_label: Glossary
-description: Common terms and concepts you may come across in the Polkadot ecosystem.
+description: Common Terms and Concepts in the Polkadot Ecosystem.
 keywords: [glossary, questions, definitions]
 slug: ../glossary
 ---
@@ -19,14 +19,24 @@ potentially receive staking rewards in return for doing so.
 
 The fourth (now defunct) proof of concept (PoC-4) [testnet](#testnet) for Polkadot.
 
+## Asset Hub
+
+A system parachain used for asset management.
+
 ## Attestation
 
-In the Polkadot validity system, an _attestation_ is a type of message that validators broadcast
+In the network's validity system, an _attestation_ is a type of message that validators broadcast
 that says whether they think a parachain candidate block is valid or invalid.
 
 ## Auction (Parachain)
 
-Parachain auctions are how non-common-good parathreads win a slot to become a parachain.
+Parachain auctions were used by non-system parachains to access Polkadot. The current method is
+through purchase of [coretime](#agile-coretime).
+
+## Aura
+
+Authority-based round-robin scheduling (AURA) provides a slot-based block authoring mechanism, where
+a known set of authorities take turns producing blocks.
 
 ## Authority
 
@@ -57,6 +67,14 @@ in the given order.
 A collection of data, such as transactions, that together indicate a state transition of the
 blockchain.
 
+## Blockspace
+
+[Blockspace](https://polkadot.network/blog/blockspace-blockspace-ecosystems-how-polkadot-is-unlocking-the-full-potential-of-web3)
+is the capacity of a blockchain to finalize and commit operations. It represents a blockchain's
+security, computing, and storage capability as an end product. Blockspace produced by different
+blockchains can vary in quality, availability, and flexibility. Polkadot has a
+[blockspace-centric architecture](https://www.rob.tech/blog/polkadot-blockspace-over-blockchains/).
+
 ## Block Explorer
 
 An application that allows a user to explore the different blocks on a blockchain.
@@ -76,21 +94,21 @@ makes BLS a preferred scheme for voting in consensus algorithms and threshold si
 ## Bonding
 
 A process by which tokens can be "frozen" in exchange for some other benefit. For example, staking
-is a form of bonding for which you receive rewards in exchange for securing the network. You can
-also bond tokens in exchange for a parachain slot.
+is a form of bonding for which you receive rewards in exchange for securing the network.
 
-## Bounty
+## [Bounty](../learn/learn-polkadot-opengov-treasury.md#bounties)
 
-A mechanism which works in some sense as the reverse of a Treasury Proposal, allowing the Polkadot
-Council to indicate that there is a need to do some task for the Polkadot network and allowing users
-to receive DOT in return for working on that task.
+A mechanism that allows network participants to access treasury funding without going through the
+process of submitting an OpenGov referendum. Note that a bounty got funds through OpenGov in the
+first place, but the subsequent disbursement of those funds is controlled by curators based on
+achieved milestones by the recipient.
 
 ## Bridge
 
-A parachain that acts as an intermediary between the Polkadot Relay Chain and an external chain, in
-such a way that it appears to the Relay Chain that the external chain is a parachain (i.e., meets
-the Polkadot Host's requirements of parachains). Bridges allow for interaction between other
-blockchains, such as Ethereum and Bitcoin, that are not natively compatible with Polkadot.
+A parachain that acts as an intermediary between the relay chain and an external chain, in such a
+way that it appears to the relay chain that the external chain is a parachain (i.e., meets the
+network Host's requirements of parachains). Bridges allow for interaction between other blockchains,
+such as Ethereum and Bitcoin, that are not natively compatible with the relay chain.
 
 ## Byzantine Fault Tolerance
 
@@ -102,10 +120,7 @@ Ensuring Byzantine fault tolerance is an important part of developing any distri
 ## Capacity
 
 The maximum number of nominators signalling intent to nominate a validator (and thus could
-potentially actively nominate that validator in the next session). This maximum number will equal
-the number of nominators necessary to oversubscribe a validator. Any validator which is "at
-capacity" or higher may potentially be oversubscribed in the next session; a validator that is not
-at capacity cannot be oversubscribed unless more nominators select it before the next election.
+potentially actively nominate that validator in the next session).
 
 ## Candidate
 
@@ -114,7 +129,7 @@ being referred to as a candidate as soon it has been finalized.
 
 ## Collations
 
-Parachain blocks or candidates that are being proposed to the Polkadot relay chain validators. More
+Parachain blocks or candidates that are being proposed to the relay chain validators. More
 specifically, a collation is a [data structure](https://spec.polkadot.network/#defn-collation) which
 contains the proposed parachain candidate, including an optional validation parachain Runtime update
 and upward messages.
@@ -123,6 +138,13 @@ and upward messages.
 
 A node that maintains a parachain by collecting parachain transactions and producing state
 transition proofs for the validators.
+
+## Collectives
+
+The Polkadot Collectives parachain was added in
+[Referendum 81](https://polkadot.polkassembly.io/referendum/81) and exists only on Polkadot (i.e.,
+there is no Kusama equivalent). The Collectives chain hosts on-chain collectives that serve the
+Polkadot network, such as the [Fellowship](#fellowship) and [Polkadot Alliance](#polkadot-alliance).
 
 ## Commission
 
@@ -133,8 +155,8 @@ remaining rewards set out for the nominators that are backing that validator.
 
 ## Common Good (Parachain)
 
-A parachain which does not win a parachain slot due to winning a slot auction, but is allowed on due
-to providing a common good service for the network.
+See [System Parachains](#system-parachains), which is generally preferred over the term "common
+good".
 
 ## Community Queue
 
@@ -147,11 +169,16 @@ The process of a group of entities to agree on a particular data value (such as 
 makeup of blocks on a blockchain). There are a variety of algorithms used for determining consensus.
 The consensus algorithm used by Polkadot is [GRANDPA](#grandpa-finality-gadget).
 
+## Coretime
+
+The time allocated for utilizing a core that can be purchased in bulk or on demand. It is measured
+in relay chain blocks.
+
 ## Crowdloan
 
-A mechanism for potential parachains to temporarily source tokens to win an auction for a parachain
-slot. Tokens gathered in this way are programmatically returned to the lender after the lease period
-is over or the crowdloan period ends.
+A mechanism used in the past for potential parachains to temporarily source tokens to win an auction
+for a relay chain core. Tokens gathered in this way were programmatically returned to the lender
+after the lease period was over or the crowdloan period ended.
 
 ## Curator
 
@@ -168,7 +195,7 @@ network as opposed to being run on a specific system or set of systems.
 The native token for Polkadot. DOT serves three purposes: network governance (allowing them to vote
 on-chain upgrades and other exceptional events), general operation (rewarding good actors and
 punishing bad actors), and bonding (adding new parachains by "freezing" DOT while they are connected
-the Relay Chain).
+the relay chain).
 
 ## Duty Roster
 
@@ -195,8 +222,8 @@ conflicting chains.
 
 ## External Queue
 
-The queue for proposals originating with the Polkadot Council which are waiting to become referenda.
-Compare the Community queue.
+**Not applicable to OpenGov.** The queue for proposals originating with the Council which are
+waiting to become referenda. Compare the Community queue.
 
 ## Extrinsic
 
@@ -205,13 +232,18 @@ number, signature, and varying data types indicating the resulting runtime funct
 including the parameters required for that function to be executed. These state changes are invoked
 from the outside world, i.e. they are not part of the system itself. Extrinsics can take two forms,
 "[inherents](#inherent)" and "[transactions](#transaction)". For more technical details see the
-[polkadot spec](https://spec.polkadot.network/#_extrinsics)
+[polkadot spec](https://spec.polkadot.network/#id-extrinsics)
+
+## Technical Fellowship
+
+A mostly self-governing expert body with a primary goal of representing humans who embody and
+contain the technical knowledge base of the Kusama and/or Polkadot networks and protocols.
 
 ## Finality
 
 The property of a block that cannot be reverted. Generally, created blocks are not final until some
-point in the future - perhaps never, in the case of "probabilistic finality". The Polkadot Relay
-Chain uses a deterministic finality gadget known as [GRANDPA](#grandpa-finality-gadget).
+point in the future - perhaps never, in the case of "probabilistic finality". The relay chain uses a
+deterministic finality gadget known as [GRANDPA](#grandpa-finality-gadget).
 
 ## Finality Gadget
 
@@ -235,8 +267,7 @@ In the _genesis_ state Alice, Bob, and Charlie had 30 tokens each.
 ## Governance
 
 The process of determining what changes to the network are permissible, such as modifications to
-code or movement of funds. The governance system in Polkadot is on-chain and revolves around
-stakeholder voting.
+code or movement of funds. The governance system is on-chain and revolves around stakeholder voting.
 
 ## Governance Council
 
@@ -247,10 +278,9 @@ group to vote on and cancelling malicious referenda.
 
 ## GRANDPA Finality Gadget
 
-GHOST-based Recursive ANcestor Deriving Prefix Agreement. It is the finality gadget for Polkadot,
-which allows asynchronous, accountable, and safe finality to the blockchain. For an overview of
-GRANDPA, see
-[this Medium post](https://medium.com/polkadot-network/polkadot-proof-of-concept-3-a-better-consensus-algorithm-e81c380a2372)
+GHOST-based Recursive ANcestor Deriving Prefix Agreement. It is the finality gadget allows
+asynchronous, accountable, and safe finality to the blockchain. For an overview of GRANDPA, see
+[this Medium post](https://medium.com/polkadot-network/polkadot-proof-of-concept-3-a-better-consensus-algorithm-e81c380a2372).
 
 ## Hard Fork
 
@@ -269,7 +299,7 @@ of the underlying blockchain and creates a new branch of _the same blockchain_.
 
 Horizontal Relay-routed Message Passing, also known as HRMP, is a precursor to the complete XCMP
 implementation, that mimics the same interface and semantics of XCMP. It is similar to XCMP except
-for how it stores all messages in the Relay Chain storage, therefore making it more expensive and
+for how it stores all messages in the relay chain storage, therefore making it more expensive and
 demanding more resources than XCMP. The plan is to retire HRMP once the implementation of XCMP is
 complete.
 
@@ -289,7 +319,7 @@ margin that each validator deems reasonable.
 ## Injected Account
 
 An account that is not directly managed by the Polkadot UI but can be accessed through it, such as
-accounts controlled by the Polkadot{.js} extension.
+accounts controlled by the Polkadot-JS extension.
 
 ## Interoperability
 
@@ -313,7 +343,7 @@ is entirely in the hands of the community (i.e., Kusama token holders).
 
 ## Lease Period
 
-A particular amount of time that a parachain for which the parachain can connect to the Relay Chain.
+A particular amount of time that a parachain for which the parachain can connect to the relay chain.
 
 ## LIBP2P
 
@@ -346,6 +376,12 @@ particular receiving parachain over a channel.
 
 Data that includes information about other data, such as information about a specific transaction.
 
+## Motion
+
+A motion is essentially a "referendum" or "decision" being considered by the Council. The Council
+can vote on motions like approving Treasury Proposals or making proposals for the community to vote
+on.
+
 ## Next Session
 
 This indicates that the validator will be a member of the active set in the next session.
@@ -362,7 +398,8 @@ the good behavior of the validator. Nominated Proof-of-Stake differs from the mo
 Delegated Proof-of-Stake in that nominators are subject to loss of stake if they nominate a bad
 validator; delegators are not subject to loss of stake based on the behavior of the validator. Note
 that some other blockchain technologies may use the term Delegated Proof-of-Stake, even if
-delegators can be slashed. Polkadot uses the Phragmén method to allocate stake to nominees.
+delegators can be [slashed](../learn/learn-offenses.md). Polkadot uses the Phragmén method to
+allocate stake to nominees.
 
 ## Nominator
 
@@ -383,27 +420,17 @@ governance allows decisions to be made transparently. Note that there are a vari
 algorithms for making these decisions, such as simple majority voting, adaptive quorum biasing, or
 identity-based quadratic voting.
 
-## Online Message
+## Polkadot OpenGov
 
-This is a message that is broadcast by a validator to verify to the network that the validator is
-online, even if they haven't published a block this epoch. This is sometimes referred to as
-"ImOnline".
+Previously known as Governance v2 (Gov2) during early development,
+[Polkadot OpenGov](../learn/learn-polkadot-opengov) serves as the current governance protocol for
+both Kusama and Polkadot.
 
 ## Origin
 
 The initiator of an extrinsic. A simple origin would be the account that is sending a token to
 another account. Polkadot also supports more complex origin types, such as the
 [root origin](#root-origin), from which privileged functions can be called.
-
-## Oversubscribed
-
-If more than the maximum number of nominators nominate the same validator, it is "oversubscribed",
-and only the top staked nominators (ranked by the amount of stake, up to the maximum number of
-nominators) are paid rewards. Other nominators will receive no rewards for that era. The current
-maximum number of nominators is
-{{ kusama: <RPC network="kusama" path="consts.staking.maxNominatorRewardedPerValidator" defaultValue={256}/> on Kusama, :kusama }}
-{{ polkadot: <RPC network="polkadot" path="consts.staking.maxNominatorRewardedPerValidator" defaultValue={256}/> on Polkadot, :polkadot }}
-but it can be modified via governance.
 
 ## Pallet
 
@@ -412,22 +439,24 @@ A [Substrate](#substrate) runtime module.
 ## Parachain
 
 A blockchain that meets several characteristics that allow it to work within the confines of the
-Polkadot Host. Also known as "parallelized chain."
+network Host. Also known as "parallelized chain". All parachains start their life-cycle as a
+parathread.
 
 ## Parachain Development Kit (PDK)
 
 Similar to an [SDK](#sdk), parachain development kits (PDK) is a set of tools that make it easy for
-developers to create Polkadot compatible [parachains](#parachain).
+developers to create Polkadot-compatible [parachains](#parachain).
 
 ## ParaID
 
-A unique numeric (non-negative integer) identifier for a parathread.
+A unique numeric (non-negative integer) identifier for a parachain.
 
 ## Parathread
 
-A blockchain that works within the confines of the Polkadot Host, thus allowing it to connect to the
-Polkadot Relay Chain. This can be done either by becoming a parachain or connecting on a "pay as you
-go" basis. All parachains start their life-cycle as a parathread.
+Historically, the term "parathread" has been used in two contexts: a chain registered with a
+`ParaID` on the [relay chain](#relay-chain) that has not yet become a parachain (i.e. not connected
+to a relay chain core), or as an on-demand parachain (i.e. a parachain using on-demand coretime)
+which does not produce blocks at regular intervals.
 
 ## Parachain Registry
 
@@ -436,24 +465,43 @@ chain.
 
 ## Parity Technologies
 
-A company, founded by Dr. Gavin Wood and Dr. Jutta Steiner, that is developing Substrate and
+A company, founded by Dr. Gavin Wood and Dr. Jutta Steiner, that is developing Substrate, Kusama and
 Polkadot. It has also released several other projects including Parity Ethereum and Parity Secret
 Store.
+
+## People Chain
+
+A [system parachain](#system-parachains) for identity management.
 
 ## Polkadot
 
 A heterogeneous, multi-chain network allowing various blockchains of different characteristics to
 perform arbitrary, cross-chain communication under shared security.
 
-## Polkadot Host
+## Polkadot Alliance
 
-The environment in which a runtime module can be executed. Parachains must support the Polkadot
+The Polkadot Alliance is an [on-chain collective](#collectives) founded by Acala, Astar, Interlay,
+Kilt, Moonbeam, Phala, and Subscan, to establish standards and ethics for open-source development in
+[referendum #94](https://polkadot.polkassembly.io/referendum/94). It aims to support development
+standards and expose bad actors within the ecosystems of Polkadot.
+
+## Host
+
+The environment in which a runtime module can be executed. Parachains must support the network
 Host - external chains that do not will have to use a bridge. Previously known as the Polkadot
-Runtime Environment or PRE.
+Runtime Environment.
 
-## Polkadot Runtime Environment
+## Runtime Environment
 
-The previous name for the [Polkadot Host](#polkadot-host).
+The previous name for the Polkadot [Host](#polkadot-host).
+
+## Paseo
+
+Paseo [testnet](#testnet) provisions testing on Polkadot's "production" runtime, which means less
+chance of feature/code mismatch when developing parachain apps. Specifically, after the
+[Polkadot Technical fellowship](#technical-fellowship) proposes a runtime upgrade for Polkadot, this
+testnet is updated, giving a period where the testnet will be ahead of Polkadot to allow for
+testing.
 
 ## Preimage
 
@@ -472,7 +520,7 @@ systems limit the number of participants.
 
 A proof produced by parachain collators. Based on this proof and the parachain registry, a validator
 can verify that a parachain has properly executed its state transition function. Proofs of Validity
-go into the Relay Chain blocks.
+go into the relay chain blocks.
 
 ## Proof of Work (PoW)
 
@@ -482,8 +530,8 @@ Proof-of-Work system can have any number of participants.
 
 ## Proposal
 
-A potential function call to be voted on in a referendum. Proposals modify the behavior of the
-Polkadot network, from minor parameter tuning up to replacing the runtime code.
+A potential function call to be voted on in a referendum. Proposals can modify the behavior of the
+network, from minor parameter tuning up to replacing the runtime code.
 
 ## Protocol
 
@@ -494,7 +542,7 @@ and possible recovery methods.
 ## Random Seed
 
 A random seed is a pseudo-random number available on-chain. It is used in various places of the
-Polkadot protocol, most prominently in [BABE](#babe) the block production mechanism.
+protocol, most prominently in [BABE](#babe), the block production mechanism.
 
 ## Referendum
 
@@ -524,7 +572,8 @@ the information is not stored in the chain's trie, but along blocks.
 
 ## Rococo
 
-The [testnet](#testnet) set aside for testing parachains, cumulus, and related technology.
+Rococo was a [testnet](#testnet) set aside for testing parachains, cumulus, and related technology.
+Please refer to Paseo test network.
 
 ## Root Origin
 
@@ -556,7 +605,7 @@ network to scale in capabilities (e.g. processing more transactions) when needed
 
 ## Sealing
 
-The process of adding a block to the Relay Chain. Note that finalization is a separate process -
+The process of adding a block to the relay chain. Note that finalization is a separate process -
 blocks are finalized sometime after they are sealed.
 
 ## Session
@@ -566,8 +615,7 @@ Validators can only join or exit the validator set at a session change.
 
 ## Session Certificate
 
-A message containing a signature on the concatenation of all the Session keys. Signed by the
-Controller.
+A message containing a signature on the concatenation of all the Session keys.
 
 ## Session Key
 
@@ -576,14 +624,14 @@ Hot keys that are used for performing network operations by validators, for exam
 
 ## Shared Security
 
-The security model that Polkadot uses whereby all chains are equally secured. This is achieved by
-placing proofs of the validity of parachain blocks into the Relay Chain such that, in order to
-revert finality of a single parachain, an attacker would need to attack the entire Polkadot system.
+The security model used whereby all chains are equally secured. This is achieved by placing proofs
+of the validity of parachain blocks into the relay chain such that, in order to revert finality of a
+single parachain, an attacker would need to attack the entire system.
 
 ## Slashing
 
 The removal of a percentage of an account's DOT as a punishment for a validator acting maliciously
-or incompetently (e.g., equivocating or remaining offline for an extended period).
+or incompetently. For more information, see the [page about offenses](../learn/learn-offenses.md).
 
 ## Soft Fork
 
@@ -597,31 +645,42 @@ consensus rules but upgraded clients are still compatible with old consensus rul
 A collection of software tools (and programs) packaged together that can be used to develop
 software.
 
+## Spend Period
+
+Successfully enacted Treasury track referenda will get funded at the end of the
+[spending period](./chain-state-values.md#treasury-spending-period). Treasury funds are directly
+sent to the beneficiary account at the end of the spend period.
+
 ## Staking
 
-The act of bonding tokens (for Polkadot, DOT) by putting them up as "collateral" for a chance to
-produce a valid block (and thus obtain a block reward). Validators and nominators stake their DOT in
-order to secure the network.
+The act of bonding tokens by putting them up as "collateral" for a chance to produce a valid block
+(and thus obtain a block reward). Validators and nominators stake their tokens in order to secure
+the network.
 
 ## State transition function
 
 A function that describes how the state of a blockchain can be transformed. For example, it may
 describe how tokens can be transferred from one account to another.
 
-## Statemint
-
-A common good parachain is used for asset management. The Kusama version is called Statemine; the
-Westend version is called Westmint.
-
 ## Substrate
 
-A modular framework for building blockchains. Polkadot is built using Substrate. Chains built with
-Substrate will be easy to connect as parachains.
+A modular framework for building blockchains. Polkadot is built using
+[Substrate](https://substrate.io/). Chains built with Substrate will be easy to connect as
+parachains. For developers, see the
+[Substrate GitHub repository](https://github.com/paritytech/polkadot-sdk/tree/master/substrate).
+
+## System Parachains
+
+Parachains that are part of the Polkadot core protocol. These are allocated a parachain execution
+core by governance rather than by coretime purchase. Examples of system parachains include
+[Asset Hub](../learn/learn-assets.md), [Bridge Hub](../learn/learn-system-chains.md#bridge-hub),
+[Collectives](../learn/learn-system-chains.md#collectives) and
+[People Chain](../learn/learn-system-chains.md#people-chain).
 
 ## Tabling
 
-In Polkadot governance, bringing a proposal to a vote via referendum. Note that this is the British
-meaning of "tabling", which is different from the US version, which means "to postpone" a measure.
+In governance, bringing a proposal to a vote via referendum. Note that this is the British meaning
+of "tabling", which is different from the US version, which means "to postpone" a measure.
 
 ## Teleport
 
@@ -636,6 +695,14 @@ Networks are often executed on a testnet before they are deployed to a [mainnet]
 ## Tokenization
 
 The process of replacing sensitive data with non-sensitive data.
+
+## Tracks
+
+Each [Origin](#origin) is associated with a single referendum class and each class is associated
+with a [Track](../maintain/maintain-guides-polkadot-opengov#origins-and-tracks). The Track outlines
+the lifecycle for the proposal and is independent from other class's tracks. Having independent
+tracks allows the network to tailor the dynamics of referenda based upon their implied privilege
+level.
 
 ## Tranche
 
@@ -659,16 +726,16 @@ send funds to Bob by the fact that she signed a transfer-funds message with her 
 
 ## Validator
 
-A node that secures the Relay Chain by staking DOT, validating proofs from collators on parachains
+A node that secures the relay chain by staking DOT, validating proofs from collators on parachains
 and voting on consensus along with other validators.
 
 ## Vertical Message Passing
 
 Vertical message passing consists of two separate types of message passing, Downward Message Passing
-(DMP) and Upward Message Passing (UMP). Downward messages pass from the Relay Chain to a parachain,
+(DMP) and Upward Message Passing (UMP). Downward messages pass from the relay chain to a parachain,
 although they may also originate from another parachain via
 [HRMP](#Horizontal-Relay-routed-Message-Passing). Upward messages originate from parachains and go
-up to the Relay Chain via runtime entry points.
+up to the relay chain via runtime entry points.
 
 ## Voting
 
@@ -701,7 +768,8 @@ before the watermark are guaranteed to be processed.
 
 A Switzerland-based foundation that nurtures and stewards technologies and applications in the
 fields of decentralized web software protocols, particularly those that utilize modern cryptographic
-methods to safeguard decentralization, to the benefit and for the stability of the Web3 ecosystem.
+methods to safeguard decentralization, to the benefit and for the stability of the
+[Web3 ecosystem](./web3-and-polkadot.md).
 
 ## WebAssembly
 
@@ -719,6 +787,19 @@ the cost of the transactions (referred to as [extrinsics](#extrinsic)) are deter
 execution. Checkout this section of the Substrate docs covering
 [transaction weights and fees](https://docs.substrate.io/build/tx-weights-fees/).
 
+## Westend
+
+The [testnet](#testnet) is set aside for testing the Polkadot relay chain. Contrary to the
+[Paseo testnet](#paseo), the Westend testnet is used by the core developers to iterate on
+protocol-level features like [asynchronous backing](../learn/learn-async-backing.md), etc, that are
+not relevant for parachain developers.
+
 ## Witness
 
 Cryptographic proof statements of data validity.
+
+## Whitelist Pallet
+
+Allows one [Origin ](#origin) to escalate the privilege level of another Origin for a certain
+operation. In terms of OpenGov, it allows the [Fellowship](#fellowship) to authorise a new origin
+(which we will call Whitelisted-Root) to be executed with Root-level privileges.

@@ -2,15 +2,15 @@
 id: learn-spree
 title: SPREE
 sidebar_label: SPREE
-description: Learn about the fundamentals of SPREE.
+description: Fundamentals of SPREE.
 keywords: [execution, SPREE, wasm, runtime]
 
 slug: ../learn-spree
 ---
 
 Shared Protected Runtime Execution Enclaves (SPREE) sometimes referred to as "trust wormholes," are
-fragments of logic comparable to runtime modules in Substrate, but live on the Polkadot Relay Chain
-and may be opted into by parachains.
+fragments of logic comparable to runtime modules in Substrate, but live on the relay chain and maybe
+opted into by parachains.
 
 SPREE in brief was described with the following properties and functions:
 
@@ -24,21 +24,21 @@ SPREE in brief was described with the following properties and functions:
 ## Origin
 
 On 28 March, 2019 u/Tawaren, a member of the Polkadot community, made a post on
-[r/dot][polkadot reddit] called "SmartProtocols Idea" and laid out a proposal for [Smart
-Protocols][smart protocols reddit post]. The core insight of the post was that XCMP had a
-complication in that it was difficult to verify and prove code was executed on a parachain without
-trust. A solution was to install the SmartProtocols in the Relay Chain that would be isolated blobs
-of code with their own storage per instance that could only be changed through an interface with
-each parachain. SmartProtocols are the precursor to SPREE.
+[r/dot](https://www.reddit.com/r/dot/) called "SmartProtocols Idea" and laid out a proposal for
+[Smart Protocols](https://www.reddit.com/r/dot/comments/b6kljn/smartprotocols_idea/). The core
+insight of the post was that XCMP had a complication in that it was difficult to verify and prove
+code was executed on a parachain without trust. A solution was to install the SmartProtocols in the
+relay chain that would be isolated blobs of code with their own storage per instance that could only
+be changed through an interface with each parachain. SmartProtocols are the precursor to SPREE.
 
 ## What is a SPREE module?
 
 SPREE modules are fragments of logic (in concrete terms they are blobs of
 [WebAssembly](learn-wasm.md) code) that are uploaded onto Polkadot through a governance mechanism or
-by parachains. Once the blob is uploaded to Polkadot, all other parachains can decide to opt-in to
-the logic. The SPREE module would retain its own storage independent of the parachain, but would be
-callable through an interface with the parachain. Parachains will send messages to the SPREE module
-synchronously.
+by parachains. Once the blob is uploaded to the relay chain, all other parachains can decide to
+opt-in to the logic. The SPREE module would retain its own storage independent of the parachain, but
+would be callable through an interface with the parachain. Parachains will send messages to the
+SPREE module synchronously.
 
 SPREE modules are important to the overall XCMP architecture because they give a guarantee to the
 code that will be executed on destination parachains. While XCMP guarantees the delivery of a
@@ -80,9 +80,9 @@ change the total supply of tokens and a basic interface.
 
 The diagram above is a simplification of the Polkadot system.
 
-In this diagram, we see that the Wasm code for SPREE module "X" has been uploaded to the Polkadot
-Relay Chain. The two cylinders "A" and "B" represent two distinct parachains that have both opted-in
-to this SPREE module creating two distinct instances of it with their own XCMP endpoints "A.X" and
+In this diagram, we see that the Wasm code for SPREE module "X" has been uploaded to the relay
+chain. The two cylinders "A" and "B" represent two distinct parachains that have both opted-in to
+this SPREE module creating two distinct instances of it with their own XCMP endpoints "A.X" and
 "B.X".
 
 In the example, we assume that this SPREE module "X" contains the functionality for incrementing or
@@ -101,6 +101,3 @@ with the previous state root of the SPREE module instances, the data of the XCMP
 instances, and the next state root of the instance. They do this validation by checking it against
 the `validate` function as provided by the SPREE module API. Collators are expected to be able to
 provide this information to progress their parachains.
-
-[polkadot reddit]: https://www.reddit.com/r/dot/
-[smart protocols reddit post]: https://www.reddit.com/r/dot/comments/b6kljn/smartprotocols_idea/

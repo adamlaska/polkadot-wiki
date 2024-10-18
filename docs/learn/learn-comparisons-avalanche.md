@@ -1,8 +1,8 @@
 ---
 id: learn-comparisons-avalanche
-title: Polkadot and Avalanche
+title: Polkadot vs. Avalanche
 sidebar_label: Avalanche
-description: A high-level comparison between Polkadot and Avalanche.
+description: Comparison between Polkadot and Avalanche.
 keywords: [avalance, proof of stake, comparison]
 slug: ../learn-comparisons-avalanche
 ---
@@ -17,9 +17,9 @@ To keep the content on this page factually correct and up-to-date,
 :::
 
 Polkadot and Avalanche both have an architecture that allows for application-specific blockchains to
-be designed and connected to a primary network. In Polkadot, the primary network is the Relay-chain
+be designed and connected to a primary network. In Polkadot, the primary network is the relay chain
 and Avalanche does this with 3 main chains - the P-chain, X-chain, and C-chain. Similar to how
-Polkadot has its Parachains that connect to the Relay-chain, Avalanche has what’s called
+Polkadot has its Parachains that connect to the relay chain, Avalanche has what’s called
 [subnets](https://docs.avax.network/subnets). Similar to Polkadot, Avalanche also uses a PoS
 mechanism for achieving consensus. The validators stake their AVAX tokens in order to participate in
 the PoS system and secure the network.
@@ -34,7 +34,7 @@ Ethereum. Smart contracts in Polkadot are implemented on
 [parachains](build-smart-contracts#parachains). Polkadot being a layer-0 blockchain, is not a smart
 contract platform and does not have plans to support them natively.
 
-![Avalanche Network](../assets/comparisons/avalanche/avalanche-network.png)
+![avalanche-network](../assets/comparisons/avalanche/avalanche-network.png)
 
 Image source: [Avalanche docs](https://docs.avax.network/).
 
@@ -75,7 +75,7 @@ Primary Network.
 
 ## Consensus
 
-![Avalanche Network](../assets/comparisons/avalanche/avalanche-consensus-protocols.png)
+![avalanche-consensus-protocols](../assets/comparisons/avalanche/avalanche-consensus-protocols.png)
 
 Image source:
 [gyuho.dev](https://gyuho.dev/nakamoto-bitcoin-vs-snow-avalanche-consensus.html#snow-family-protocols).
@@ -97,7 +97,7 @@ hierarchical collection of systems used to reach finality on Avalanche:
 Compared to Polkadot, Avalanche uses an asynchronous hybrid system that is based on a classical and
 Nakomoto approach. Polkadot uses a synchronous hybrid model that combines
 [BABE](learn-consensus#block-production-babe) and
-[GRADNPA](learn-consensus#finality-gadget-grandpa), where BABE is the algorithm used to build blocks
+[GRANDPA](learn-consensus#finality-gadget-grandpa), where BABE is the algorithm used to build blocks
 in a probabilistic way, and GRANDPA is a finality mechanism that uses a deterministic approach to
 adding blocks to the longest chain. In the end, validators agree to whole chains, rather than single
 new blocks.
@@ -121,16 +121,15 @@ algorithm to make decisions about which edges to keep and which to not.
 
 ## Staking Mechanics
 
-Avalanche uses a Delegated Proof-of-Stake mechanism without any slashing. The barrier to entry for
-staking as a full node validator is 2500 AVAX, and 25 AVAX to become a delegator. With a minimum
-stake period being two weeks and a maximum period being a year, for both validators and delegators.
-It is not clear from the Avalanche documentation what happens after a year, it is likely that
-validators will have to re-stake and start a new period. Validators acquire points for uptime and
-correctness of their work, and the remuneration of rewards depends on that.
+Avalanche uses a Delegated Proof-of-Stake mechanism without any [slashing](./learn-offenses.md). The
+barrier to entry for staking as a full node validator is 2500 AVAX, and 25 AVAX to become a
+delegator. With a minimum stake period being two weeks and a maximum period being a year, for both
+validators and delegators. It is not clear from the Avalanche documentation what happens after a
+year, it is likely that validators will have to re-stake and start a new period. Validators acquire
+points for uptime and correctness of their work, and the remuneration of rewards depends on that.
 
-In Polkadot the minimum stake for needed to be a validator is variable, same for being a nominator
-even though it takes 10 DOT to setup a stash and controller account to start nominating. The true
-minimum need to be competitive enough to be included in the active set for validators, or
+In Polkadot the minimum stake needed to be a validator is variable, same for being a nominator. The
+true minimum need to be competitive enough to be included in the active set for validators, or
 successfully being chosen as a nominator depends on the minimum staked amounts on the network at a
 given time. Read more about this in the [staking page](learn-staking).
 
@@ -186,7 +185,7 @@ environment in which protocol engineers can have the freedom to create their own
 include them in the Avalanche ecosystem via subnets. The trade-offs are that the autonomy of design
 is limited and blockchains have to buy into the design decisions of Avalanche's main chains. Unlike
 parachains on Polkadot, Subnets are not able to share the security of the main chains. In addition
-to utilizing block finality and security of the Relay-chain, parachains on Polkadot use
+to utilizing block finality and security of the relay chain, parachains on Polkadot use
 [XCM](learn-xcm) to pass native trustless messages, instead of having to rely on multiple bridging
 solutions. However, Subnets are easy to launch when compared to parachains, given that they only
 need a recommended minimum of 5 validators, which make the costs of launch predictable. Avalanche

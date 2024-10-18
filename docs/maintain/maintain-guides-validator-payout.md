@@ -16,13 +16,13 @@ Polkadot), validators are paid proportionally to the amount of _era points_ they
 points are reward points earned for payable actions like:
 
 - issuing validity statements for [parachain](../learn/learn-parachains.md) blocks.
-- producing a non-uncle block in the Relay Chain.
+- producing a non-uncle block in the relay chain.
 - producing a reference to a previously unreferenced uncle block.
 - producing a referenced uncle block.
 
 :::note
 
-An uncle block is a Relay Chain block that is valid in every regard, but which failed to become
+An uncle block is a relay chain block that is valid in every regard, but which failed to become
 canonical. This can happen when two or more validators are block producers in a single slot, and the
 block produced by one validator reaches the next block producer before the others. We call the
 lagging blocks uncle blocks.
@@ -35,10 +35,11 @@ Era points create a probabilistic component for staking rewards.
 
 If the _mean_ of staking rewards is the average rewards per era, then the _variance_ is the
 variability from the average staking rewards. The exact DOT value of each era point is not known in
-advance since it depends on the total number of points earned by all validators in a given era. This 
-is designed this way so that the total payout per era depends on Polkadot's 
-[inflation model](../learn/learn-staking-advanced.md#inflation), and not on the number of payable actions 
-(f.e., authoring a new block) executed. For more information, check [this stackexchange post](https://substrate.stackexchange.com/questions/5353/how-are-rewards-in-dot-calculated-from-the-era-points-earned-by-validators-in-po).
+advance since it depends on the total number of points earned by all validators in a given era. This
+is designed this way so that the total payout per era depends on Polkadot's
+[inflation model](../learn/learn-staking-advanced.md#inflation), and not on the number of payable
+actions (f.e., authoring a new block) executed. For more information, check
+[this stackexchange post](https://substrate.stackexchange.com/questions/5353/how-are-rewards-in-dot-calculated-from-the-era-points-earned-by-validators-in-po).
 
 With parachains now on Polkadot, a large percentage of era points will come from parachain
 validation, as a subset of validators are selected to para-validate for all parachains each epoch,
@@ -75,8 +76,9 @@ Also, let:
 Then, `v` &#8593; if `w` &#8593;, as this reduces `p` : `w`, with respect to `e`.
 
 Increased `v` is expected, and initially keeping `p` &#8595; using the same para-validator set for
-all parachains ensures [availability](../learn/learn-availability.md) and
-[approval voting](../learn/learn-governance.md). In addition, despite `v` &#8593; on an `e` to `e`
+all parachains ensures
+[availability](../learn/learn-parachains-protocol.md#availability-and-unavailability-phase) and
+[voting](../learn/learn-polkadot-opengov.md). In addition, despite `v` &#8593; on an `e` to `e`
 basis, over time, the amount of rewards each validator receives will equal out based on the
 continuous selection of para-validators.
 
@@ -167,57 +169,29 @@ than static, equilibrium. Potential validators will run different numbers of val
 different amounts of stake to them as time goes on, and in response to the actions of other
 validators on the network.
 
-## Slashing
-
-Although rewards are paid equally, slashes are relative to a validator's stake. Therefore, if you do
-have enough DOT to run multiple validators, it is in your best interest to do so. A slash of 30%
-will, of course, be more DOT for a validator with 18 DOT staked than one with 9 DOT staked.
-
-Running multiple validators does not absolve you of the consequences of misbehavior. Polkadot
-punishes attacks that appear coordinated more severely than individual attacks. You should not, for
-example, run multiple validators hosted on the same infrastructure. A proper multi-validator
-configuration would ensure that they do not fail simultaneously.
-
-Nominators have the incentive to nominate the lowest-staked validator, as this will result in the
-lowest risk and highest reward. This is due to the fact that while their vulnerability to slashing
-remains the same (since it is percentage-based), their rewards are higher since they will be a
-higher proportion of the total stake allocated to that validator.
-
-To clarify this, let us imagine two validators, `v1` and `v2`. Assume both are in the active set,
-have commission set to 0%, and are well-behaved. The only difference is that `v1` has 90 DOT
-nominating it and `v2` only has 10. If you nominate `v1`, it now has `90 + 10 = 100` DOT, and you
-will get 10% of the staking rewards for the next era. If you nominate `v2`, it now has
-`10 + 10 = 20` DOT nominating it, and you will get 50% of the staking rewards for the next era. In
-actuality, it would be quite rare to see such a large difference between the stake of validators,
-but the same principle holds even for smaller differences. If there is a 10% slash of either
-validator, then you will lose 1 DOT in each case.
-
-:::caution
-
-If a validator is oversubscribed in an era, staking rewards are distributed only to the the top
-{{ polkadot: <RPC network="polkadot" path="query.staking.maxNominatorRewardedPerValidator" defaultValue={256}/> :polkadot }}
-{{ kusama: <RPC network="kusama" path="query.staking.maxNominatorRewardedPerValidator" defaultValue={256}/> :kusama }}
-nominators and the rest of the nominators do not receive any rewards. This is not the case for
-slashing! Every active nominator of the validator committing slashable offence will be slashed.
-
-:::
-
 ## Nominators and Validator Payments
 
-Nominated stake allows you to "vote" for validators and share in the rewards (and slashing) without
-running a validator node yourself. Validators can choose to keep a percentage of the rewards due to
-their validator to "reimburse" themselves for the cost of running a validator node. Other than that,
-all rewards are shared based on the stake behind each validator. This includes the stake of the
-validator itself, plus any stake bonded by nominators.
+A nominated stake allows you to "vote" for validators and share the rewards (but also
+[slashing](../learn/learn-offenses.md)) without running a validator node yourself.
+
+Although staking rewards are based on the activities of the validator node during a specific era,
+the validator never has access to or ownership of staking rewards. In fact, `staking.payoutStakers`
+or `staking.payoutStakerByPage` calls are necessary to payout staking rewards, can be called by
+anyone, and the staking rewards are "generated" because of it and automatically sent to nominators
+(i.e., rewards are produced or minted and sent to nominators, not sent from validators to
+nominators).
+
+This includes the stake of the validator itself plus any stake bonded by nominators.
 
 :::info
 
 Validators set their preference as a percentage of the block reward, _not_ an absolute number of
-DOT. Polkadot's block reward is based on the _total_ amount at stake, with the reward peaking when
-the amount staked is at 50% of the total supply. The commission is set as the amount taken by the
-validator; that is, 0% commission means that the validator does not receive any proportion of the
-rewards besides that owed to it from self-stake, and 100% commission means that the validator
-operator gets all rewards and gives none to its nominators.
+DOT. Polkadot's block reward is
+[based on the _total_ amount at stake](../learn/learn-inflation.md#ideal-staking-rate). The
+commission is set as the amount taken by the validator; that is, 0% commission means that the
+validator does not receive any proportion of the rewards besides that owed to it from self-stake,
+and 100% commission means that the validator operator gets all rewards and gives none to its
+nominators.
 
 :::
 

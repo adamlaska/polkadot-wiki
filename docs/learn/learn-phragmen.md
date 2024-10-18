@@ -2,19 +2,16 @@
 id: learn-phragmen
 title: NPoS Election Algorithms
 sidebar_label: NPoS Election Algorithms
-description: Learn about the election method used on Polkadot's Nominated Proof of Staking.
+description: The Election Methods used in Polkadot's NPoS Mechanism.
 keywords: [phragmen, sequential phragmén method, elections, algorithm, phragmms]
 slug: ../learn-phragmen
 ---
 
-import RPC from "./../../components/RPC-Connection";
-
 ## NPoS Election Algorithms
 
-Since validators are paid almost equally in Polkadot in each era, it is important that the stake
-behind each validator is uniformly spread out. An election algorithm for Nominated Proof of Staking
-(NPoS) on Polkadot will try to optimize three metrics when computing a solution graph of nominators
-and validators:
+Since validators are paid almost equally in in each era, it is important that the stake behind each
+validator is uniformly spread out. An election algorithm for Nominated Proof of Staking (NPoS) will
+try to optimize three metrics when computing a solution graph of nominators and validators:
 
 1. Maximize the total amount at stake.
 1. Maximize the stake behind the minimally staked validator.
@@ -56,20 +53,26 @@ Given the large set of nominators and validators, Phragmén's method is a diffic
 problem. Polkadot uses off-chain workers to compute the result off-chain and submit a transaction to
 propose the set of winners. The reason for performing this computation off-chain is to keep a
 constant block time of six seconds and prevent long block times at the end of each era, when the
-validator election takes place. 
+validator election takes place.
 
 :::info Staking Miners
 
-The process of computing the optimal solution for NPoS election can be delegated to 
+The process of computing the optimal solution for NPoS election can be delegated to
 [Staking Miners](learn-staking-miner).
 
 :::
 
 ### Council Elections
 
-The Phragmén method is also used in the council election mechanism. When you vote for council
-members, you can select up to 16 different candidates, and then place a reserved bond as the weight
-of your vote. Phragmén will run once on every election to determine the top candidates to assume
+:::info Deprecated in Polkadot OpenGov
+
+Phragmen was used for Council elections in [Governance v1](./archive/learn-governance.md).
+
+:::
+
+The Phragmén method was also used in the council election mechanism. When you voted for council
+members, you could select up to 16 different candidates and then place a reserved bond as the weight
+of your vote. Phragmén would run once on every election to determine the top candidates to assume
 council positions and then again amongst the top candidates to equalize the weight of the votes
 behind them as much as possible.
 
@@ -80,7 +83,8 @@ However, it is good to understand how it works since it means that not all the s
 nominated will end up on your validator after an election. Nominators are likely to nominate a few
 different validators that they trust to do a good job operating their nodes.
 
-You can use the [offline-phragmén](https://github.com/kianenigma/offline-phragmen) script for
+You can use
+[this offline-phragmén](https://gist.github.com/tugytur/3531cc618bfbb42f1a6cfb44d9906197) tool for
 predicting the outcome of a validator election ahead of a new election.
 
 ## Understanding Phragmén
@@ -98,8 +102,8 @@ vote - that is, they can signal approval for any subset of the candidates.
 
 The subset should be a minimum size of one (i.e., one cannot vote for no candidates) and a maximum
 size of one less than the number of candidates (i.e., one cannot vote for all candidates). Users are
-allowed to vote for all or no candidates, but this will not have an effect on the final result, and
-so votes of this nature are meaningless.
+allowed to vote for all or no candidates, but this will not affect the final result, making votes of
+this nature meaningless.
 
 Note that in this example, all voters are assumed to have equal say (that is, their vote does not
 count more or less than any other votes). The weighted case will be considered later. However,
@@ -115,8 +119,8 @@ their paper
 
 The Phragmén method will iterate, selecting one seat at a time, according to the following rules:
 
-1. Voters submit their ballots, marking which candidates they approve. Ballots will not be
-   modified after submission.
+1. Voters submit their ballots, marking which candidates they approve. Ballots will not be modified
+   after submission.
 2. An initial load of 0 is set for each ballot.
 3. The candidate who wins the next available seat is the one where the ballots of their supporters
    would have the _least average (mean) cost_ if that candidate wins.
@@ -225,10 +229,10 @@ is `2`, etc.
 ### Rationale
 
 While this method works well if all voters have equal weight, this is not the case in Polkadot.
-Elections for both validators and candidates for the Polkadot Council are weighted by the number of
-tokens held by the voters. This makes elections more similar to a corporate shareholder election
-than a traditional political election, where some members have more pull than others. Someone with a
-single token will have much less voting power than someone with 100. Although this may seem
+Elections for both validators and candidates for the Council are weighted by the number of tokens
+held by the voters. This makes elections more similar to a corporate shareholder election than a
+traditional political election, where some members have more pull than others. Someone with a single
+token will have much less voting power than someone with 100. Although this may seem
 anti-democratic, in a pseudonymous system, it is trivial for someone with 100 tokens to create 100
 different accounts and spread their wealth to all of their pseudonyms.
 
@@ -533,8 +537,8 @@ V5 supports: A with stake: 2.813 and D with stake: 2.187.
 
 You will notice that the total amount of stake for candidates `A`, `D`, and `B` equals (aside from
 rounding errors) the total amount of stake of all the voters (`1 + 2 + 3 + 4 + 5 = 15`). This is
-because each voter had at least one of their candidates fill a seat. Any voter whose had none of
-their candidates selected will also not have any stake in any of the elected candidates.
+because each voter had at least one of their candidates fill a seat. Any voter who had none of their
+candidates selected will also not have any stake in any of the elected candidates.
 
 ## Optimizations
 
@@ -559,13 +563,13 @@ give time for this off-chain worker to run, staking commands (bond, nominate, et
 in the last quarter of each era.
 
 These optimizations will not be covered in-depth on this page. For more details, you can view the
-[Rust implementation of elections in Substrate](https://github.com/paritytech/substrate/blob/master/frame/elections-phragmen/src/lib.rs),
+[Rust implementation of elections in Substrate](https://github.com/paritytech/polkadot-sdk/tree/master/substrate/frame/elections-phragmen/src/lib.rs),
 the
-[Rust implementation of staking in Substrate](https://github.com/paritytech/substrate/blob/master/frame/staking/src/lib.rs),
+[Rust implementation of staking in Substrate](https://github.com/paritytech/polkadot-sdk/tree/master/substrate/frame/staking/src/lib.rs),
 or the `seqPhragménwithpostprocessing` method in the
 [Python reference implementation](https://github.com/w3f/consensus/tree/master/NPoS). If you would
 like to dive even more deeply, you can review the
-[W3F Research Page on Sequential Phragmén Method](https://research.web3.foundation/en/latest/polkadot/NPoS/1.%20Overview.html?highlight=Phragm%C3%A9n#the-election-process).
+[W3F Research Page on Sequential Phragmén Method](https://research.web3.foundation/Polkadot/protocols/NPoS/Overview#the-election-process).
 
 ### Rationale for Minimizing the Number of Validators Per Nominator
 
@@ -580,11 +584,12 @@ cases, this could be an attack vector on the system, where nominators nominate m
 validators with small amounts of stake in order to slow the system at the next era change.
 
 While this would reduce network and on-chain load, being able to select only a single validator
-incurs some diversification costs. If the single validator that a nominator has nominated goes
-offline or acts maliciously, then the nominator incurs a risk of a significant amount of slashing.
-Nominators are thus allowed to nominate up to 16 different validators. However, after the weighted
-edge-reducing algorithm is run, the number of validators per nominator is minimized. Nominators are
-likely to see themselves nominating a single active validator for an era.
+incurs some diversification costs. If the single validator that a nominator has nominated acts
+maliciously, then the nominator incurs a risk of a significant amount of
+[slashing](./learn-offenses.md). Nominators are thus allowed to nominate up to 16 different
+validators. However, after the weighted edge-reducing algorithm is run, the number of validators per
+nominator is minimized. Nominators are likely to see themselves nominating a single active validator
+for an era.
 
 At each era change, as the algorithm runs again, nominators are likely to have a different validator
 than they had before (assuming a significant number of selected validators). Therefore, nominators
@@ -615,24 +620,13 @@ Running the Phragmén algorithm is time-consuming, and often cannot be completed
 limits of production of a single block. Waiting for calculation to complete would jeopardize the
 constant block production time of the network. Therefore, as much computation as possible is moved
 to an off-chain worker, which validators can work on the problem without impacting block production
-time. By restricting the ability of users to make any modifications in the last 25% of an era, and
-running the selection of validators by nominators as an off-chain process, validators have a
-significant amount of time to calculate the new active validator set and allocate the nominators in
-an optimal manner.
+time.
 
-There are several further restrictions put in place to limit the complexity of the election and
-payout. As already mentioned, any given nominator can only select up to
-{{ polkadot: <RPC network="polkadot" path="consts.staking.maxNominations" defaultValue={16}/> :polkadot }}
-{{ kusama: <RPC network="kusama" path="consts.staking.maxNominations" defaultValue={24}/> :kusama }}
-validators to nominate. Conversely, a single validator can have only
-{{ polkadot: <RPC network="polkadot" path="query.staking.maxNominatorsCount" defaultValue={50000}/> :polkadot }}
-{{ kusama: <RPC network="kusama" path="query.staking.maxNominatorsCount" defaultValue={20000}/> :kusama }}
-nominators. A drawback to this is that it is possible, if the number of nominators is very high or
-the number of validators is very low, that all available validators may be "oversubscribed" and
-unable to accept more nominations. In this case, one may need a larger amount of stake to
-participate in staking, since nominations are priority-ranked in terms of amount of stake.
+To limit the complexity of the election and payout, any given nominator can only
+[select a limited number of validators](../general/chain-state-values.md#maximum-votes-per-nominator)
+to nominate.
 
-### Phragmms (fka Balphragmms)
+### Phragmms (aka Balphragmms)
 
 `Phragmms`, formerly known as `Balphragmms`, is a new election rule inspired by Phragmén and
 developed in-house for Polkadot. In general, election rules on blockchains is an active topic of
@@ -705,7 +699,7 @@ solution needs to be tracked at any given time, and a block producer can submit 
 the block only if the block passes the verification test, consisting of checking:
 
 1. Feasibility,
-2. Balancedness, and
+2. Balance and
 3. Local Optimality - The least stake backing of _A_ is higher than the highest score among
    unelected candidates
 
@@ -751,11 +745,11 @@ size _k_:
 
 - [Phragmms](https://arxiv.org/pdf/2004.12990.pdf) - W3F research paper that expands on the
   sequential Phragmén method.
-- [W3F Research Page on NPoS](https://research.web3.foundation/en/latest/polkadot/NPoS/1.%20Overview.html) -
+- [W3F Research Page on NPoS](https://research.web3.foundation/Polkadot/protocols/NPoS/Overview) -
   An overview of Nominated Proof of Stake as its applied to Polkadot.
 - [Python Reference Implementations](https://github.com/w3f/consensus/tree/master/NPoS) - Python
   implementations of Simple and Complicated Phragmén methods.
-- [Substrate Implementation](https://github.com/paritytech/substrate/blob/master/frame/staking/src/lib.rs) -
+- [Substrate Implementation](https://github.com/paritytech/polkadot-sdk/tree/master/substrate/frame/staking/src/lib.rs) -
   Rust implementation used in Substrate.
 - [Phragmén's and Thiele's Election Methods](https://arxiv.org/pdf/1611.08826.pdf) - 95-page paper
   explaining Phragmén's election methods in detail.

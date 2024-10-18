@@ -1,8 +1,8 @@
 ---
 id: learn-comparisons-cosmos
-title: Polkadot and Cosmos
+title: Polkadot vs. Cosmos
 sidebar_label: Cosmos
-description: Learn about the differences between Polkadot and Cosmos.
+description: Comparison between Polkadot and Cosmos.
 keywords: [cosmos, polkadot, interoperability, interoperability hub]
 slug: ../learn-comparisons-cosmos
 ---
@@ -21,76 +21,74 @@ as long as the validators on Polkadot can execute it within a Wasm environment.
 The shards of Polkadot are called "[parachains](learn-parachains.md)". Every time a parachain wants
 to make a state transition, it submits a block (batch of state transitions) along with a state proof
 that Polkadot validators can independently verify. These blocks are finalized for the parachains
-when they are finalized by Polkadot's Relay Chain, the main chain of the system. As such, all
+when they are finalized by Polkadot's relay chain, the main chain of the system. As such, all
 parachains share state with the entire system, meaning that a chain re-organization of a single
-parachain would require a re-organization of all parachains and the Relay Chain.
+parachain would require a re-organization of all parachains and the relay chain.
 
-Cosmos uses a bridge-hub model that connects Tendermint chains. The system can have multiple hubs
-(the primary being the "Cosmos Hub"), but each hub connects a group of exterior chains, called
-"zones". Each zone is responsible for securing the chain with a sufficiently staked and
-decentralized validator set. Zones send messages and tokens to each other via the hub using a
-protocol called Inter-Blockchain Communication (IBC). As zones do not share state, a re-organization
-of one zone would not re-organize other zones, meaning each message is trust-bound by the
-recipient's trust in the security of the sender.
+Cosmos employs horizontal scalability using
+[app-chains](https://www.alchemy.com/overviews/what-is-an-appchain). The Cosmos Network consists of
+100+ IBC connected chains, including the Cosmos Hub, Osmosis, Celestia, dYdX v4 chain, Injective,
+etc. Each chain is responsible for securing the chain with a sufficiently staked and decentralized
+validator set. But chains also have the option to leverage shared security from the Cosmos Hub.
+Cosmos chains send cross-chain messages using the Inter-Blockchain Communication protocol. As chains
+do not share state, a re-organization of one chain would not re-organize other chains, meaning each
+message is trust-bound by the recipient's trust in the security of the sender.
 
 ## Architecture
 
 ### Polkadot
 
-Polkadot has a Relay Chain acting as the main chain of the system. All validators in Polkadot are on
-the Relay Chain. Parachains have collators, who construct and propose parachain blocks to
-validators. Collators don't have any security responsibilities, and thus do not require a robust
-incentive system. Collators can submit a single parachain block for every Relay Chain block every 6
-seconds. Once a parachain submits a block, validators perform a series of availability and validity
-checks before committing it to the final chain.
+Polkadot has a relay chain acting as the main chain of the system. All validators in Polkadot are on
+the relay chain. Parachains have collators who construct and propose parachain blocks to validators.
+Collators do not have any security responsibilities and, thus, do not require a robust incentive
+system. Collators can submit a single parachain block for every relay chain block every 6 seconds.
+Once a parachain submits a block, validators perform a series of
+[availability and validity checks](./learn-parachains-protocol.md#availability-and-validity-anv-protocol)
+before committing it to the final chain.
 
-Parachain slots are limited, and thus parachain candidates participate in an auction to reserve a
-slot for up to two years. For chains that do not have the funding for a parachain slot or the
-necessity to execute with a six-second block time, Polkadot also has
-[parathreads](learn-parathreads.md). Parathreads execute on a pay-as-you-go basis, only paying to
-execute a block when they need to.
+Parachains can access the relay chain through cores. Relay chain cores are limited, but parachain
+can decide to purchase coretime in-bulk (and reserve an entire core) or on-demand (and interlace a
+core with another chain) and executing on a pay-as-you-go basis, only paying to execute a block when
+they need to.
 
-In order to interact with chains that want to use their own finalization process (e.g. Bitcoin),
-Polkadot has [bridge parachains](learn-bridges.md) that offer two-way compatibility.
+To interact with chains that want to use their finalization process (e.g., Bitcoin), Polkadot has
+[bridges](learn-bridges.md) that offer two-way compatibility.
 
 ### Cosmos
 
-Cosmos has a main chain called a "Hub" that connects other blockchains called "zones". Cosmos can
-have multiple hubs, but this overview will consider a single hub. Each zone must maintain its own
-state and therefore have its own validator community. When a zone wants to communicate with another
-zone, it sends packets over IBC. The Hub maintains a multi-token ledger of token balances
-(non-transfer messages are relayed but their state not stored in the Hub).
+Cosmos is a network of blockchains built using [CometBFT](https://cometbft.com/) as the consensus
+engine, [Cosmos SDK](https://docs.cosmos.network/) as the VM, and [IBC](https://ibcprotocol.dev/)
+which allows chains to interoperate with one another.
 
-Zones monitor the state of the Hub with a light client, but the Hub does not track zone states.
-Zones must use a deterministic finality algorithm (currently, all use Tendermint) and implement the
-IBC interface to be able to send messages to other chains through the Hub.
-
-Cosmos can also interact with external chains by using "peg zones", which are similar to bridged
-parachains.
+IBC leverages light clients that can keep track of the consensus of a counterparty chain. For
+example, when chains A and B want to talk to one another, chain A uses its light client of B to
+verify messages sent from chain B, and vice versa. IBC is
+[currently live](https://app.trustless.zone/?from=POLKADOT&to=OSMOSIS) on Polkadot and Kusama. Work
+is ongoing to implement IBC to Ethereum and it's layer 2s.
 
 ## Consensus
 
 Polkadot uses a hybrid [consensus](learn-consensus.md) protocol with two sub-protocols: BABE and
-GRANDPA, together called "Fast Forward". BABE (Blind Assignment for Blockchain Extension) uses a
-verifiable random function (VRF) to assign slots to validators and a fallback round-robin pattern to
-guarantee that each slot has an author. GRANDPA (GHOST-based Recursive Ancestor Deriving Prefix
-Agreement) votes on chains, rather than individual blocks. Together, BABE can author candidate
-blocks to extend the finalized chain and GRANDPA can finalize them in batches (up to millions of
-blocks at a time).
+GRANDPA. BABE (Blind Assignment for Blockchain Extension) uses a verifiable random function (VRF) to
+assign slots to validators and a fallback round-robin pattern to guarantee that each slot has an
+author. GRANDPA (GHOST-based Recursive Ancestor Deriving Prefix Agreement) votes on chains, rather
+than individual blocks. Together, BABE can author candidate blocks to extend the finalized chain and
+GRANDPA can finalize them in batches (up to millions of blocks at a time).
 
 This isolation of tasks provides several benefits. First, it represents a reduction in transport
 complexity for both block production and finalization. BABE has linear complexity, making it easy to
 scale to thousands of block producers with low networking overhead. GRANDPA has quadratic
-complexity, but is reduced by a factor of the latency, or how many blocks it finalizes in one batch.
+complexity, but has an advantage in terms of the latency. It is capable of finalizing multiple
+blocks in one batch.
 
-Second, having the capacity to extend the chain with unfinalized blocks allows other validators to
-perform extensive availability and validity checks to ensure that no invalid state transitions make
-their way into the final chain.
+Second, having the capacity to extend the chain with unfinalized blocks allows for liveness of the
+network and the validators to perform extensive availability and validity checks to ensure that no
+invalid state transitions make their way into the final chain.
 
-Cosmos (both the Hub and the zones) uses Tendermint consensus, a round-robin protocol that provides
-instant finality. Block production and finalization are on the same path of the algorithm, meaning
-it produces and finalizes one block at a time. Because it is a PBFT-based algorithm (like GRANDPA),
-it has quadratic transport complexity, but can only finalize one block at a time.
+Cosmos chains use Tendermint consensus, a round-robin protocol that provides instant finality. Block
+production and finalization are on the same path of the algorithm, meaning it produces and finalizes
+one block at a time. Because it is a PBFT-based algorithm (like GRANDPA), it has quadratic
+complexity, designed to finalize one block at a time.
 
 ## Staking Mechanics
 
@@ -124,37 +122,33 @@ nominating a validator does not assign any governance voting rights to the valid
 Polkadot uses [Cross-Consensus Message Passing Format (XCM)](learn-xcm.md) for parachains to send
 arbitrary messages to each other. Parachains open connections with each other and can send messages
 via their established channels. [Collators](learn-collator.md) are full nodes of parachains and full
-nodes of the Relay Chain, so collator nodes are a key component of message passing. Messages do not
-pass through the Relay Chain, only proofs of post and channel operations (open, close, etc.) go into
-the Relay Chain. This enhances scalability by keeping data on the edges of the system.
+nodes of the relay chain, so collator nodes are a key component of message passing. Messages do not
+pass through the relay chain, only proofs of post and channel operations (open, close, etc.) go into
+the relay chain. This enhances scalability by keeping data on the edges of the system.
 
 In the case of a chain re-organization, messages can be rolled back to the point of the
-re-organization based on the proofs of post in the Relay Chain. The shared state amongst parachains
+re-organization based on the proofs of post in the relay chain. The shared state amongst parachains
 means that messages are free from trust bounds; they all operate in the same context.
 
 Polkadot has an additional protocol called [SPREE](learn-spree.md) that provides shared logic for
 cross-chain messages. Messages sent with SPREE carry additional guarantees about provenance and
 interpretation by the receiving chain.
 
-Cosmos uses a cross-chain protocol called Inter-Blockchain Communication (IBC). The current
-implementation of Cosmos uses the Hub to pass tokens between zones. However, Cosmos does have a new
-specification for passing arbitrary data. Nonetheless, as chains do not share state, receiving
-chains must trust the security of a message's origin.
+Cosmos uses a light client-based cross-chain protocol called
+[Inter-Blockchain Communication (IBC)](https://www.ibcprotocol.dev/) for arbitrary message-passing.
+In the current design, IBC chains create 1:1
+[Connections](https://ibc.cosmos.network/main/ibc/overview#connections) with each other, over which
+[Channels](https://ibc.cosmos.network/main/ibc/overview#channels) can be established. IBC data
+packets are sent between application modules on different chains over these channels. In the case of
+IBC, as chains do not share state, receiving chains must trust the security of a message's origin.
 
 ## Governance
 
-Polkadot has a multicameral [governance](learn-governance.md) system with several avenues to pass
-proposals. All proposals ultimately pass through a public referendum, where the majority of tokens
-can always control the outcome. For low-turnout referenda, Polkadot uses adaptive quorum biasing to
-set the passing threshold. Referenda can contain a variety of proposals, including fund allocation
-from an on-chain [Treasury](learn-treasury.md). Decisions get enacted on-chain and are binding and
+Polkadot has [OpenGov](learn-polkadot-opengov.md) framewok with several trackss to pass proposals as
+public referenda, where the majority of tokens can always control the outcome. Referenda can contain
+a variety of proposals, including fund allocation from an on-chain
+[Treasury](./learn-polkadot-opengov-treasury.md). Decisions get enacted on-chain and are binding and
 autonomous.
-
-Polkadot has several on-chain, permissionless bodies. The primary one is the Council, which
-comprises a set of accounts that are elected in Phragmén fashion. The Council represents minority
-interests and as such, proposals that are unanimously approved of by the Council have a lower
-passing threshold in the public referendum. There is also a Technical Committee for making technical
-recommendations (e.g. emergency runtime upgrade to fix a bug).
 
 Cosmos uses coin-vote signaling to pass referenda. The actual enactment of governance decisions is
 carried out via a protocol fork, much like other blockchains. All token holders can vote, however,
@@ -202,6 +196,8 @@ security must be cooperative, not competitive. Therefore, Polkadot provides the 
 logic and security processes across chains so that they can interact knowing that their
 interlocutors execute within the same security context.
 
-The Cosmos network uses a bridge-hub model to connect chains with independent security guarantees,
-meaning that inter-chain communication is still bounded by the trust that the receiving chain has in
-the sending chain.
+The Cosmos network uses an Internet-like unstructured network that uses IBC to connect chains with
+independent security guarantees, meaning that when data is sent from one chain to another, the
+receiving chain must trust the sending chain. Thus, each blockchain in the Cosmos network has its
+independent security mechanisms. Chains also have the option to share security with the Cosmos Hub
+and thereby leverage its economic security.

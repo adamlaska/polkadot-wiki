@@ -27,8 +27,8 @@ If you are trying to run a validator, refer to this tutorial
 
 **Selecting a chain**
 
-Use the `--chain <chainspec>` option to select the chain. Can be `polkadot`, `kusama`, `westend`,
-`rococo`, or a custom chain spec. By default, the client will start Polkadot. Watch
+Use the `--chain <chainspec>` option to select the chain. Can be `polkadot`, `kusama`, `westend`, or
+a custom chain spec. By default, the client will start Polkadot. Watch
 [How a single codebase can power four different blockchains](https://www.youtube.com/watch?v=i9vNCHz6wO4)
 to learn more about how the chain selection works internally.
 
@@ -57,10 +57,9 @@ polkadot export-blocks --from 0 <output_file>
 
 **RPC ports**
 
-Use the `--rpc-external` flag to expose RPC ports and `--ws-external` to expose websockets. Not all
-RPC calls are safe to allow and you should use an RPC proxy to filter unsafe calls. Select ports
-with the `--rpc-port` and `--ws-port` options. To limit the hosts who can access, use the
-`--rpc-cors` option.
+Use the `--rpc-external` flag to expose RPC ports. Not all RPC calls are safe to allow and you
+should use an RPC proxy to filter unsafe calls. Select ports with the `--rpc-port` option. To limit
+the hosts who can access, use the `--rpc-cors` option.
 
 **Execution**
 
@@ -114,16 +113,6 @@ Switching between database backends will require a resync.
 If you want to test out ParityDB you can add the flag `--database paritydb`.
 
 :::
-
-## Deployment Tools
-
-Web3 Foundation maintains [Polkadot Deployer](https://github.com/w3f/polkadot-deployer), which
-allows you to create local or remote cloud deployments of Polkadot nodes. See the README for
-instructions.
-
-Validators, see the
-[validator setup guide](../maintain/maintain-guides-how-to-use-polkadot-validator-setup.md) for
-information specific to deploying validator nodes.
 
 ## Monitoring and Telemetry
 

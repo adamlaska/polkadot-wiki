@@ -2,8 +2,9 @@
 id: learn-cryptography
 title: Cryptography on Polkadot
 sidebar_label: Cryptography
-description: An overview of the cryptographic functions used in Polkadot.
-keywords: [cryptography, hashing, keypair, signing, keys]
+description: Cryptographic Functions used in Polkadot.
+keywords:
+  [cryptography, hashing, keypair, signing, keys, randomness, verifiable random function, VDF]
 slug: ../learn-cryptography
 ---
 
@@ -40,8 +41,7 @@ curves like Curve25519.
 ## Keys
 
 Public and private keys are an important aspect of most crypto-systems and an essential component
-that enables blockchains like {{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }} to
-exist.
+that enables blockchains like Polkadot to exist.
 
 ### Account Keys
 
@@ -56,21 +56,21 @@ expect `ed25519` to be much better supported by commercial HSMs for the foreseea
 same time, `sr25519` makes implementing more complex protocols safer. In particular, `sr25519` comes
 with safer version of many protocols like HDKD common in the Bitcoin and Ethereum ecosystem.
 
-### "Controller" and "Stash" Keys
+### Stash and Staking Proxy Keys
 
-When we talk about "controller" and "stash" keys, we usually talk about them in the context of
+When we talk about stash and staking proxy keys, we usually talk about them in the context of
 running a validator or nominating, but they are useful concepts for all users to know. Both keys are
 types of account keys. They are distinguished by their intended use, not by an underlying
 cryptographic difference. All the info mentioned in the parent section applies to these keys. When
-creating new controller or stash keys, all cryptography supported by account keys are an available
-option.
+creating new staking proxy or stash keys, all cryptography supported by account keys are an
+available option.
 
-The controller key is a semi-online key that will be in the direct control of a user, and used to
-submit manual extrinsics. For validators or nominators, this means that the controller key will be
-used to start or stop validating or nominating. Controller keys should hold some
-{{ polkadot: DOT :polkadot }}{{ kusama: KSM :kusama }} to pay for fees, but they should not be used
-to hold huge amounts or life savings. Since they will be exposed to the internet with relative
-frequency, they should be treated carefully and occasionally replaced with new ones.
+The staking proxy key is a semi-online key that will be in the direct control of a user, and used to
+submit manual extrinsics. For validators or nominators, this means that the proxy key will be used
+to start or stop validating or nominating. Proxy keys should hold some native tokens to pay for
+fees, but they should not be used to hold huge amounts or life savings. Since they will be exposed
+to the internet with relative frequency, they should be treated carefully and occasionally replaced
+with new ones.
 
 The stash key is a key that will, in most cases, be a cold wallet, existing on a piece of paper in a
 safe or protected by layers of hardware security. It should rarely, if ever, be exposed to the
@@ -79,56 +79,53 @@ should be thought of as a saving's account at a bank, which ideally is only ever
 conditions. Or, perhaps a more apt metaphor is to think of it as buried treasure, hidden on some
 random island and only known by the pirate who originally hid it.
 
-Since the stash key is kept offline, it must be set to have its funds bonded to a particular
-controller. For non-spending actions, the controller has the funds of the stash behind it. For
-example, in nominating, staking, or voting, the controller can indicate its preference with the
-weight of the stash. It will never be able to actually move or claim the funds in the stash key.
-However, if someone does obtain your controller key, they could use it for slashable behavior, so
-you should still protect it and change it regularly.
+Since the stash key is kept offline, it must be set to have its funds bonded to a particular staking
+proxy. For non-spending actions, the staking proxy has the funds of the stash behind it. For
+example, in nominating, staking, or voting, the proxy can indicate its preference with the weight of
+the stash. It will never be able to actually move or claim the funds in the stash key. However, if
+someone does obtain your proxy key, they could use it for [slashable behavior](./learn-offenses.md),
+so you should still protect it and change it regularly.
 
 ### Session Keys
 
 Session keys are hot keys that must be kept online by a validator to perform network operations.
 Session keys are typically generated in the client, although they don't have to be. They are _not_
 meant to control funds and should only be used for their intended purpose. They can be changed
-regularly; your controller only need create a certificate by signing a session public key and
+regularly; your staking proxy only need to create a certificate by signing a session public key and
 broadcast this certificate via an extrinsic.
 
-{{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }} uses six session keys:
+Polkadot uses six session keys:
 
 - Authority Discovery: sr25519
-- GRANDPA: ed25519
 - BABE: sr25519
-- I'm Online: sr25519
+- BEEFY: ecdsa
+- GRANDPA: ed25519
 - Parachain Assignment: sr25519
 - Parachain Validator: ed25519
 
-BABE requires keys suitable for use in a [Verifiable Random Function](learn-randomness.md/#vrfs) as
-well as for digital signatures. Sr25519 keys have both capabilities and so are used for BABE.
+BABE requires keys suitable for use in a [Verifiable Random Function](#vrf) as well as for digital
+signatures. Sr25519 keys have both capabilities and so are used for BABE.
 
 In the future, we plan to use a BLS key for GRANDPA because it allows for more efficient signature
 aggregation.
 
-## FAQ about Keys
+### FAQ about Keys
 
-### Why was `ed25519` selected over `secp256k1`?
+#### Why was `ed25519` selected over `secp256k1`?
 
-The original key derivation cryptography that was implemented for
-{{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }} and Substrate chains was `ed25519`,
-which is a Schnorr signature algorithm implemented over the Edward's Curve 25519 (so named due to
-the parameters of the curve equation).
+The original key derivation cryptography that was implemented for Polkadot and Substrate chains was
+`ed25519`, which is a Schnorr signature algorithm implemented over the Edward's Curve 25519 (so
+named due to the parameters of the curve equation).
 
 Most cryptocurrencies, including Bitcoin and Ethereum, currently use ECDSA signatures on the
 secp256k1 curve. This curve is considered much more secure than NIST curves, which
 [have possible backdoors from the NSA](#appendix-a-on-the-security-of-curves). The Curve25519 is
 considered possibly _even more_ secure than this one and allows for easier implementation of Schnorr
-signatures. A recent patent expiration on it has made it the preferred choice for use in
-{{ polkadot: Polkadot :polkadot }}{{ kusama: Kusama :kusama }}.
+signatures. A recent patent expiration on it has made it the preferred choice for use in Polkadot.
 
-The choice of using Schnorr signatures over using ECDSA is not so cut and dry. Jeff Burdges (a Web3
-researcher) provides additional details on the decision in this
-[research post](https://research.web3.foundation/en/latest/polkadot/keys/1-accounts.html) on the
-topic:
+The choice of using Schnorr signatures over using ECDSA is not so cut and dried. Jeff Burdges (a
+Web3 researcher) provides additional details on the decision in this
+[research post](https://research.web3.foundation/Polkadot/security/keys) on the topic:
 
 :::info Choosing Schnorr signatures over ECDSA signatures
 
@@ -143,7 +140,7 @@ signatures often take an extra 32 bytes for the public key.
 But ultimately the benefits of using Schnorr signatures outweigh the tradeoffs, and future
 optimizations may resolve the inefficiencies pointed out in the quote above.
 
-### What is `sr25519` and where did it come from?
+#### What is `sr25519` and where did it come from?
 
 Some context: The Schnorr signatures over the Twisted Edward's Curve25519 are considered secure,
 however Ed25519 has not been completely devoid of its bugs. Most notably,
@@ -174,7 +171,7 @@ boundary.
 The implementation of Schnorr signatures that is used in Polkadot and implements the Schnorrkel
 protocols over the Ristretto compression of the Curve25519 is known as **sr25519**.
 
-### Are BLS signatures used in Polkadot?
+#### Are BLS signatures used in Polkadot?
 
 Not yet, but they will be. BLS signatures allow more efficient signature aggregation. Because
 GRANDPA validators are usually signing the same thing (e.g. a block), it makes sense to aggregate
@@ -193,14 +190,104 @@ Even though Schnorr signatures allow for signature aggregation, BLS signatures a
 efficient in some fashions. For this reason it will be one of the session keys that will be used by
 validators on the Polkadot network and critical to the GRANDPA finality gadget.
 
+## Randomness
+
+Randomness in Proof of Stake blockchains is important for a fair and unpredictable distribution of
+validator responsibilities. Computers are bad at random numbers because they are deterministic
+devices (the same input always produces the same output). What people usually call random numbers on
+a computer (such as in a gaming application), are _pseudo-random_ - that is, they depend on a
+sufficiently random _seed_ provided by the user or another type of _oracle_, like a
+[weather station for atmospheric noise](https://www.random.org/randomness/), your
+[heart rate](https://mdpi.altmetric.com/details/47574324), or even
+[lava lamps](https://en.wikipedia.org/wiki/Lavarand), from which it can generate a series of
+seemingly-random numbers. But given the same seed, the same sequence will always be generated.
+
+Though, these inputs will vary based on time and space, and it would be impossible to get the same
+result into all the nodes of a particular blockchain around the world. If nodes get different inputs
+on which to build blocks, forks happen. Real-world entropy is not suitable for use as a seed for
+blockchain randomness.
+
+There are two main approaches to blockchain randomness in production today: `RANDAO` and `VRF`.
+Polkadot uses VRF.
+
+### VRF
+
+A verifiable random function (VRF) is a mathematical operation that takes some input and produces a
+random number along with a proof of authenticity that this random number was generated by the
+submitter. The proof can be verified by any challenger to ensure the random number generation is
+valid.
+
+The VRF used in Polkadot is roughly the same as the one used in Ouroboros Praos. Ouroboros
+randomness is secure for block production and works well for [BABE](learn-consensus.md#BABE). Where
+they differ is that Polkadot's VRF does not depend on a central clock (the problem becomes - whose
+central clock?), rather, it depends on its own past results to determine present and future results,
+and it uses slot numbers as a clock emulator, estimating time.
+
+#### Here's how it works in detail:
+
+Slots are discrete units of time six seconds in length. Each slot can contain a block, but may not.
+Slots make up [epochs](../general/glossary.md##epoch) - on Polkadot, 2400 slots make one epoch,
+which makes epochs four hours long.
+
+In every slot, each validator "rolls a die". They execute a function (the VRF) that takes as input
+the following:
+
+- **The "secret key",** a key specifically made for these die rolls.
+- **An epoch randomness value,** which is the hash of VRF values from the blocks in the epoch before
+  last (N-2), so past randomness affects the current pending randomness (N).
+- **The slot number.**
+
+![VRF_babe](../assets/VRF_babe.png)
+
+The output is two values: a `RESULT` (the random value) and a `PROOF` (a proof that the random value
+was generated correctly).
+
+The `RESULT` is then compared to a _threshold_ defined in the implementation of the protocol
+(specifically, in the Polkadot Host). If the value is less than the threshold, then the validator
+who rolled this number is a viable block production candidate for that slot. The validator then
+attempts to create a block and submits this block into the network along with the previously
+obtained `PROOF` and `RESULT`. Under VRF, every validator rolls a number for themselves, checks it
+against a threshold, and produces a block if the random roll is under that threshold.
+
+The astute reader will notice that due to the way this works, some slots may have no validators as
+block producer candidates because all validator candidates rolled too high and missed the threshold.
+We clarify how we resolve this issue and make sure that Polkadot block times remain near
+constant-time in the wiki page on [consensus](learn-consensus.md).
+
+### RANDAO
+
+An alternative method for getting randomness on-chain is the
+[RANDAO](https://github.com/randao/randao) method from Ethereum. RANDAO requires each validator to
+prepare by performing many thousands of hashes on some seed. Validators then publish the final hash
+during a round and the random number is derived from every participant's entry into the game. As
+long as one honest validator participates, the randomness is considered secure (non-economically
+viable to attack). RANDAO is optionally augmented with VDF.
+
+### VDFs
+
+[Verifiable Delay Functions](https://vdfresearch.org/) are computations that take a prescribed
+duration of time to complete, even on parallel computers. They produce unique output that can be
+independently and efficiently verified in a public setting. By feeding the result of RANDAO into a
+VDF, a delay is introduced that renders any attacker's attempt at influencing the current randomness
+obsolete.
+
+VDFs will likely be implemented through ASIC devices that need to be run separately from the other
+types of nodes. Although only one is enough to keep the system secure, and they will be open source
+and distributed at nearly no charge, running them is neither cheap nor incentivized, producing
+unnecessary friction for users of the blockchains opting for this method.
+
 ## Resources
 
 - [Key discovery attack on BIP32-Ed25519](https://web.archive.org/web/20210513183118/https://forum.w3f.community/t/key-recovery-attack-on-bip32-ed25519/44) -
   Archive of forum post detailing a potential attack on BIP32-Ed25519. A motivation for transition
   to the sr25519 variant.
-- [Account signatures and keys in Polkadot](https://research.web3.foundation/en/latest/polkadot/keys/index.html) -
+- [Account signatures and keys in Polkadot](https://research.web3.foundation/Polkadot/security/keys) -
   Research post by Web3 researcher Jeff Burdges.
 - [Are Schnorr signatures quantum computer resistant?](https://bitcoin.stackexchange.com/questions/57965/are-schnorr-signatures-quantum-computer-resistant/57977#57977)
+- [Polkadot's research on blockchain randomness and sortition](https://research.web3.foundation/Polkadot/protocols/block-production) -
+  contains reasoning for choices made along with proofs
+- [Discussion on Randomness used in Polkadot](https://github.com/paritytech/ink/issues/57) - W3F
+  researchers discuss the randomness in Polkadot and when it is usable and under which assumptions.
 
 ## Appendix A: On the security of curves
 
