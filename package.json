@@ -38,10 +38,10 @@
     "@actions/core": "^1.10.0",
     "@actions/github": "^5.1.1",
     "@crowdin/cli": "^3.9.1",
-    "@docusaurus/core": "^2.1.0",
+    "@docusaurus/core": "^3.6.0",
     "@docusaurus/module-type-aliases": "^2.2.0",
     "@docusaurus/plugin-client-redirects": "^2.2.0",
-    "@docusaurus/preset-classic": "^2.2.0",
+    "@docusaurus/preset-classic": "^3.6.0",
     "@octokit/rest": "^19.0.5",
     "@polkadot/api": "^9.10.2",
 
@@ -67,13 +67,13 @@
     "react-bootstrap": "^2.7.0",
     "react-dom": "^17.0.2",
     "remarkable-katex": "^1.2.1",
-    "shx": "^0.3.4",
+    "shx": "^0.4.0",
     "unist-util-visit": "2.0.1",
     "yargs": "^17.6.2"
   },
   "dependencies": {
     "@algolia/client-search": "^4.14.2",
-    "@mdx-js/runtime": "^1.6.22",
+    "@mdx-js/runtime": "^2.0.0",
     "@polkadot/util": "10.1.1",
     "@polkadot/util-crypto": "10.1.1",
     "@polkadot/wasm-crypto": "^6.4.1",
